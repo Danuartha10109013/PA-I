@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Exports\\PemesananExport' => $baseDir . '/app/Exports/PemesananExport.php',
+    'App\\Http\\Controllers\\ChatController' => $baseDir . '/app/Http/Controllers/ChatController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\DashboardControlller' => $baseDir . '/app/Http/Controllers/DashboardControlller.php',
     'App\\Http\\Controllers\\KAboutController' => $baseDir . '/app/Http/Controllers/KAboutController.php',
@@ -31,6 +32,7 @@ return array(
     'App\\Http\\Middleware\\AutoLogout' => $baseDir . '/app/Http/Middleware/AutoLogout.php',
     'App\\Http\\Middleware\\PembeliMiddleware' => $baseDir . '/app/Http/Middleware/PembeliMiddleware.php',
     'App\\Models\\AboutM' => $baseDir . '/app/Models/AboutM.php',
+    'App\\Models\\Chat' => $baseDir . '/app/Models/Chat.php',
     'App\\Models\\CustomerM' => $baseDir . '/app/Models/CustomerM.php',
     'App\\Models\\JenisM' => $baseDir . '/app/Models/JenisM.php',
     'App\\Models\\KategoriM' => $baseDir . '/app/Models/KategoriM.php',

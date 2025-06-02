@@ -155,7 +155,7 @@
 
     <div id="chatBox" class="chat-box d-none">
         <div class="chat-header">
-            Live Chat
+            Chat
             <span id="closeChat" class="close-chat">&times;</span>
         </div>
         <div class="chat-body" id="chatMessages">

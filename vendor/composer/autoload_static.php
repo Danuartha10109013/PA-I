@@ -403,8 +403,8 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri-interfaces',
-            1 => __DIR__ . '/..' . '/league/uri',
+            0 => __DIR__ . '/..' . '/league/uri',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces',
         ),
         'League\\MimeTypeDetection\\' => 
         array (
@@ -561,6 +561,7 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
 
     public static $classMap = array (
         'App\\Exports\\PemesananExport' => __DIR__ . '/../..' . '/app/Exports/PemesananExport.php',
+        'App\\Http\\Controllers\\ChatController' => __DIR__ . '/../..' . '/app/Http/Controllers/ChatController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DashboardControlller' => __DIR__ . '/../..' . '/app/Http/Controllers/DashboardControlller.php',
         'App\\Http\\Controllers\\KAboutController' => __DIR__ . '/../..' . '/app/Http/Controllers/KAboutController.php',
@@ -585,6 +586,7 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'App\\Http\\Middleware\\AutoLogout' => __DIR__ . '/../..' . '/app/Http/Middleware/AutoLogout.php',
         'App\\Http\\Middleware\\PembeliMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/PembeliMiddleware.php',
         'App\\Models\\AboutM' => __DIR__ . '/../..' . '/app/Models/AboutM.php',
+        'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
         'App\\Models\\CustomerM' => __DIR__ . '/../..' . '/app/Models/CustomerM.php',
         'App\\Models\\JenisM' => __DIR__ . '/../..' . '/app/Models/JenisM.php',
         'App\\Models\\KategoriM' => __DIR__ . '/../..' . '/app/Models/KategoriM.php',
