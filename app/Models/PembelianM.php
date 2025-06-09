@@ -18,5 +18,8 @@ class PembelianM extends Model
         'invoice',
         'no_do',
         'faktur',
+        'nominal',
+        'status_pembayaran',
+        'logo',
     ];
 }

@@ -16,8 +16,13 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>
                             <i class="bi bi-person-circle me-2"></i>
-                            Token: <strong>{{ $user->user_token }}</strong><br>
-                            <small class="text-muted">Last chat: {{ \Carbon\Carbon::parse($user->last_chat)->diffForHumans() }}</small>
+                            @php
+                                $pesanan = \App\Models\PesananM::where('uuid',$user->user_token)->first();
+                            @endphp
+                            @if($pesanan)
+                            Name: <strong>{{ $pesanan->name }}</strong> Email: <strong>{{ $pesanan->email }}</strong><br>
+                            @endif
+                            &nbsp;&nbsp;<small class="text-muted">Last chat: {{ \Carbon\Carbon::parse($user->last_chat)->diffForHumans() }}</small>
                         </span>
                         <a href="{{ route('admin.k-chat.message', $user->user_token) }}" class="btn btn-sm btn-primary">
                             Lihat Chat

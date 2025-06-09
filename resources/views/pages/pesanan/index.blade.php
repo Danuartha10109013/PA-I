@@ -2,6 +2,9 @@
 @section('title', 'PT. Trisurya Solusindo Utama || Pesanan')
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 <div class="container px-5 pb-5 mt-5">
     <h1 class="fw-bold mb-4 text-center" style="font-size: 32px; color: #ff4e50;" data-aos="fade-down">
         Pesanan
@@ -120,12 +123,47 @@
                         
                         
                         
-                        
+                        <center class="mt-5">
+                            @if($data->status_pembayaran == 'payed')
+                            <p>Status Pembayaran : <strong>Payed</strong></p>
+                            @else
+                            <button class="btn btn-primary" id="pay-button"><i class="fa fa-bank"></i> Bayar Sekarang</button>
+                            @endif
+                        </center>
                 </div>
             </div>
         </div>
         
 
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Midtrans Snap -->
+<script type="text/javascript">
+    document.getElementById('pay-button').addEventListener('click', function () {
+        snap.pay('{{ $snapToken }}', {
+            onSuccess: function(result) {
+                console.log(result);
+                // Redirect ke halaman sukses
+                window.location.href = "/pembayaran-berhasil/{{ $data->id }}";
+            },
+            onPending: function(result) {
+                alert("Menunggu pembayaran...");
+                console.log(result);
+            },
+            onError: function(result) {
+                console.error(result);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pembayaran Gagal',
+                    text: 'Silakan ulangi proses pembayaran Anda.',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+</script>
         
     </div>
 

@@ -52,6 +52,16 @@ PT. Trisurya Solusindo Utama || Pesan Product
                     <div class="form-control mb-3">
                         <label for="nama"><i class="fas fa-user"></i> Nama <small style="color: red">*</small></label>
                         <input type="text" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama" >
+                        <input type="hidden" name="uuid" id="uuid" class="form-control" readonly>
+
+                        <script>
+                             document.addEventListener("DOMContentLoaded", function () {
+                                const uuidInput = document.getElementById("uuid");
+                                if (uuidInput) {
+                                    uuidInput.value = getUserToken();
+                                }
+                            });
+                        </script>
                     </div>
                     
                     <div class="form-control mb-3">
@@ -86,7 +96,7 @@ PT. Trisurya Solusindo Utama || Pesan Product
                 <input type="hidden" name="prodct_id" value="{{$data->id}}">
 
                 <div class="col-md-12 text-center mt-4">
-                    <button type="submit" class="btn btn-success"><i class="fa-brands fa-whatsapp"></i> Send To WhatsApp</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-comment"></i> Submit</button>
                 </div>
             </div>
         </form>

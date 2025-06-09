@@ -19,6 +19,9 @@
                         <th>Invoice</th>
                         <th>No DO</th>
                         <th>Faktur Pajak</th>
+                        <th>Nominal</th>
+                        <th>Status</th>
+                        <th>Logo</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -107,7 +110,13 @@
                                 <a href="{{ asset('storage/' . ($d->faktur)) }}" target="_blank">Download File</a>
                             @endif
                         </td>
-                        
+                        <td>
+                            {{$d->nominal}}
+                        </td>
+                        <td>{{$d->status_pembayaran}}</td>
+                        <td>
+                            <img src="{{asset('storage/'.$d->logo)}}" width="99%" alt="">
+                        </td>
                         <td>
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $d->id }}">Edit</button>
                         </td>
@@ -150,6 +159,10 @@
                                             <div class="mb-3">
                                                 <label for="po" class="form-label">Faktur Pajak</label>
                                                 <input type="file" name="faktur" class="form-control" >
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="po" class="form-label">Logo</label>
+                                                <input type="file" name="logo" class="form-control" >
                                             </div>
                                         </div>
                                         

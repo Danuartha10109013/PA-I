@@ -20,5 +20,6 @@ class PesananM extends Model
         'email_perusahaan',
         'product_id',
         'total_order',
+        'uuid',
     ];
 }

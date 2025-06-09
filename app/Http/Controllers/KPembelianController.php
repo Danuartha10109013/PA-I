@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class KPembelianController extends Controller
 {
     public function index(){
-        $data = PembelianM::where('status', '!=','Selesai')->get();
+        $data = PembelianM::where('status', '!=','Selesai')->orderBy('created_at','desc')->get();
         $data1 = PembelianM::where('status','Selesai')->get();
         return view('pages.admin.k-pembelian.index',compact('data','data1'));
     }
@@ -24,6 +24,7 @@ class KPembelianController extends Controller
             'invoice' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
             'no_do' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
             'faktur' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
+            'logo' => 'nullable|file|mimes:jpeg,png', 
         ]);
 
         // Update the status field
@@ -52,6 +53,13 @@ class KPembelianController extends Controller
             $filePath = $file->storeAs('faktur', $file->getClientOriginalName(),'public');
             // You can update the database with the path of the file
             $pembeli->faktur = $filePath;
+        }
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            // Store the file in the storage folder
+            $filePath = $file->storeAs('logo', $file->getClientOriginalName(),'public');
+            // You can update the database with the path of the file
+            $pembeli->logo = $filePath;
         }
 
         // Save the changes to the model

@@ -71,6 +71,7 @@ public function admin()
                       ->groupBy('user_token')
                       ->orderByDesc('last_chat')
                       ->get();
+                      
 
     return view('pages.admin.k-chat.index', compact('userTokens'));
 }

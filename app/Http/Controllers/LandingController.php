@@ -6,6 +6,7 @@ use App\Models\AboutM;
 use App\Models\CustomerM;
 use App\Models\KategoriM;
 use App\Models\KontakM;
+use App\Models\PembelianM;
 use App\Models\ProdukM;
 use App\Models\ProjectM;
 use App\Models\SliderM;
@@ -47,7 +48,7 @@ class LandingController extends Controller
 
     public function customer(Request $request)
     {
-        $data = CustomerM::where('status', 1)->get();
+        $data = PembelianM::orderBy('created_at','desc')->get();
         return view('pages.customer.index',compact('data'));
     }
     public function testimoni(Request $request)

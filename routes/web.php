@@ -21,6 +21,8 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
 use App\Http\Middleware\AutoLogout;
+use App\Models\PesananM;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',[LandingController::class,'index'])->name('landing-page');
@@ -32,7 +34,18 @@ Route::get('/download/{file}', function ($file) {
     }
     return abort(404, 'File not found');
 });
-
+Route::get('/cek-pesanan', function (Request $request) {
+    $uuid = $request->query('uuid');
+    try {
+        $exists = PesananM::where('uuid', $uuid)->exists();
+        return response()->json(['exists' => $exists]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'exists' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
 //chats
 Route::post('/save-chat', [ChatController::class, 'store']);
 Route::get('/chat/{token}', [ChatController::class, 'getMessages']);
@@ -50,6 +63,7 @@ Route::get('/product/wa/{id}', [ProdukController::class, 'form'])->name('product
 Route::post('/product/send', [ProdukController::class, 'send'])->name('product.whatsapp.send');
 Route::get('/product/manual_book/{id}',[KProductController::class, 'download'])->name('product.manual_book');
 Route::get('/product/brosur/{id}',[KProductController::class, 'downloads'])->name('product.brosur');
+Route::get('/pembayaran-berhasil/{id}',[PesananController::class, 'success'])->name('product.brosur');
 
 
 //Customer
@@ -120,6 +134,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::prefix('pemesanan')->group(function () {
             Route::get('/',[KPesananController::class, 'index'])->name('pemesanan');
             Route::post('/active/{id}',[KPesananController::class, 'active'])->name('pemesanan.active');
+            Route::post('/active-baru/{id}',[KPesananController::class, 'active'])->name('pemesanan.active.baru');
             Route::get('/message/{id}',[KPesananController::class, 'message'])->name('pemesanan.message');
             Route::get('/export',[KPesananController::class, 'export'])->name('pemesanan.export');
             Route::delete('/delete/{id}',[KPesananController::class, 'delete'])->name('pemesanan.delete');

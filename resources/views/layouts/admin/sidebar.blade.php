@@ -53,12 +53,12 @@
               <span class="nav-link-text ms-1">Slider</span>
           </a>
       </li>
-      <li class="nav-item">
+      {{-- <li class="nav-item">
           <a class="nav-link {{ Route::is('admin.customer') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('admin.customer') }}">
               <i class="material-symbols-rounded opacity-5">support_agent</i>
               <span class="nav-link-text ms-1">Customer</span>
           </a>
-      </li>
+      </li> --}}
       <li class="nav-item">
           <a class="nav-link {{ Route::is('admin.project') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('admin.project') }}">
               <i class="material-symbols-rounded opacity-5">tactic</i>
@@ -81,7 +81,7 @@
       <li class="nav-item">
           <a class="nav-link {{ Route::is('admin.pesanan') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('admin.pesanan') }}">
               <i class="material-symbols-rounded opacity-5">assignment</i>
-              <span class="nav-link-text ms-1">Pesanan</span>
+              <span class="nav-link-text ms-1">Pembelian</span>
           </a>
       </li>
       <li class="nav-item">

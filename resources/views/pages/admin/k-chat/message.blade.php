@@ -58,10 +58,91 @@
         border-radius: 10px;
     }
 </style>
+<!-- Tombol Trigger Modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#konfirmasiModal" title="Setujui Sebagai Pembeli">
+    <i class="fa fa-user-plus"></i>
+</button>
+
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="{{ route('admin.pemesanan.active.baru', $user_token) }}" method="POST">
+      @csrf
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+
+        @php
+          $pesanan = \App\Models\PesananM::where('uuid', $user_token)->first();
+          $user = \App\Models\User::where('email', $pesanan->email)->first();
+          $pembelian = \App\Models\PembelianM::where('user_id', $user->id)->first();
+        @endphp
+
+        <div class="modal-body">
+          @if ($pembelian)
+            <div class="alert alert-info text-center">
+              <strong>User telah disetujui sebagai pembeli.</strong>
+            </div>
+          @else
+            <p>Apakah Anda yakin ingin menyetujui pemesanan ini sebagai pembeli?</p>
+
+            <div class="mb-3">
+              <label for="harga_display" class="form-label">Harga</label>
+              <input 
+                type="text" 
+                id="harga_display" 
+                class="form-control" 
+                style="outline: 2px solid #0d6efd;" 
+                required 
+                oninput="formatRupiah(this)">
+              <input type="hidden" name="nominal" id="harga_asli">
+            </div>
+          @endif
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          @if (!$pembelian)
+            <button type="submit" class="btn btn-primary">Setujui</button>
+          @endif
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function formatRupiah(input) {
+    let angka = input.value.replace(/[^,\d]/g, '').toString();
+    let split = angka.split(',');
+    let sisa = split[0].length % 3;
+    let rupiah = split[0].substr(0, sisa);
+    let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    if (ribuan) {
+        let separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+
+    let formatted = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+
+    input.value = 'Rp ' + formatted;
+
+    // Simpan angka asli tanpa format
+    const angkaBersih = angka.replace(/\D/g, '');
+    document.getElementById('harga_asli').value = angkaBersih;
+}
+</script>
+
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Chat dengan User: <code>{{ $user_token }}</code></h3>
+        @php
+            $pesanan = \App\Models\PesananM::where('uuid',$user_token)->first();
+        @endphp
+        <h3 class="card-title">Chat dengan User: <code>{{ $pesanan->name }}</code></h3>
     </div>
 
     <div id="chat-container" class="chat-container">

@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class KPesananController extends Controller
 {
@@ -32,7 +34,8 @@ class KPesananController extends Controller
     }
 
     public function active(Request $request,$id){
-        $data = PesananM::find($id);
+        // dd($request->all());
+        $data = PesananM::where('uuid',$id)->first();
 
         $user= new User();
         $user->name = $data->name;
@@ -40,6 +43,7 @@ class KPesananController extends Controller
         $user->email = $data->email;
         $user->role = 1;
         $user->active = 1;
+        $user->nominal = $request->nominal;
         $user->password = Hash::make('Trisurya');
         $user->save();
 
@@ -47,7 +51,9 @@ class KPesananController extends Controller
 
         $jadi = new PembelianM();
         $jadi->user_id = $user->id;
+        $jadi->nominal = $request->nominal;
         $jadi->product_id = $data->product_id;
+        $jadi->status_pembayaran ='pending';
         $jadi->save();
 
 
@@ -85,4 +91,28 @@ class KPesananController extends Controller
         return Excel::download(new PemesananExport($data), 'Pemesanan_Report.csv');
 
     }
+
+    public function checkout($id)
+{
+    
+    Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+    Config::$clientKey = env('MIDTRANS_CLIENT_KEY');
+    Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
+
+    $params = [
+        'transaction_details' => [
+            'order_id' => 'RR-' . time(),
+            'gross_amount' => 100000, // Total harga
+        ],
+        'customer_details' => [
+            'first_name' => 'Danu',
+            'email' => 'danu@example.com',
+        ],
+    ];
+
+    $snapToken = Snap::getSnapToken($params);
+    return view('checkout', compact('snapToken'));
+}
 }
