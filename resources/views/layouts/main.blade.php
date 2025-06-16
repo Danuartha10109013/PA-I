@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div id="chatBox" class="chat-box d-none">
                         <div class="chat-header">
-                            Live Chat
+                            Chat
                             <span id="closeChat" class="close-chat">&times;</span>
                         </div>
                         <div id="chatMessages" class="chat-body"></div>

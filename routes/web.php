@@ -181,6 +181,14 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::prefix('pesanan')->group(function () {
             Route::get('/',[KPembelianController::class, 'index'])->name('pesanan');
             Route::put('/update/{id}',[KPembelianController::class, 'update'])->name('pesanan.update');
+            Route::get('/isi/{id}',[KPembelianController::class, 'do'])->name('pesanan.isido');
+            Route::get('/edit/{id}',[KPembelianController::class, 'editdo'])->name('pesanan.editdo');
+            Route::post('/save',[KPembelianController::class, 'savedo'])->name('pesanan.savedo');
+            Route::get('/preview/do/{id}',[KPembelianController::class, 'do_preview'])->name('pesanan.previewdo');
+            Route::get('/isi/invoice/{id}',[KPembelianController::class, 'invoice'])->name('pesanan.isiinvoice');
+            Route::get('/edit/invoice/{id}',[KPembelianController::class, 'editinvoice'])->name('pesanan.editinvoice');
+            Route::post('/save/invoice',[KPembelianController::class, 'saveinvoice'])->name('pesanan.saveinvoice');
+            Route::get('/preview/invoice/{id}',[KPembelianController::class, 'invoice_preview'])->name('pesanan.previewinvoice');
 
         });
         Route::prefix('about')->group(function () {
@@ -198,6 +206,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('pesanan')->group(function () {
             Route::get('/',[PesananController::class, 'index'])->name('pesanan');
+            Route::get('/do/{id}',[PesananController::class, 'do'])->name('pesanan.do');
 
         });
         Route::prefix('testimoni')->group(function () {

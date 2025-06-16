@@ -75,13 +75,20 @@
         </div>
 
         @php
-          $pesanan = \App\Models\PesananM::where('uuid', $user_token)->first();
-          $user = \App\Models\User::where('email', $pesanan->email)->first();
-          $pembelian = \App\Models\PembelianM::where('user_id', $user->id)->first();
+            $pesanan = \App\Models\PesananM::where('uuid', $user_token)->first();
+            $user = null;
+            $pembelian = null;
+
+            if ($pesanan) {
+                $user = \App\Models\User::where('email', $pesanan->email)->first();
+                if ($user) {
+                    $pembelian = \App\Models\PembelianM::where('user_id', $user->id)->first();
+                }
+            }
         @endphp
 
         <div class="modal-body">
-          @if ($pembelian)
+          @if ($pembelian && $user)
             <div class="alert alert-info text-center">
               <strong>User telah disetujui sebagai pembeli.</strong>
             </div>
@@ -141,8 +148,9 @@ function formatRupiah(input) {
     <div class="card-header">
         @php
             $pesanan = \App\Models\PesananM::where('uuid',$user_token)->first();
+            $product = \App\Models\ProdukM::find($pesanan->product_id);
         @endphp
-        <h3 class="card-title">Chat dengan User: <code>{{ $pesanan->name }}</code></h3>
+        <h3 class="card-title">Chat dengan User: <code>{{ $pesanan->name }}</code></h3> Product : {{$product->name}}
     </div>
 
     <div id="chat-container" class="chat-container">

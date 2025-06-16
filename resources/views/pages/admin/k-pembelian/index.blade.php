@@ -72,23 +72,15 @@
                         </td>
                         <td>
                             @php
-                                $filePath = storage_path('app/' . $d->no_do); // Adjust according to where the file is stored
-                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                $deliv = \App\Models\DeliveryOrderM::where('pembeli_id',$d->id)->first();
+
                             @endphp
-                        
-                            @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
-                                <!-- Display Image Preview -->
-                                <img src="{{ asset('storage/' . ($d->no_do)) }}" alt="no_do" style="width: 100px; height: auto;">
-                            @elseif(in_array($fileExtension, ['pdf']))
-                                <!-- Display PDF Link -->
-                                <a href="{{ asset('storage/' . ($d->no_do)) }}" target="_blank">View PDF</a>
-                            @elseif(in_array($fileExtension, ['doc', 'docx', 'xls', 'xlsx']))
-                                <!-- Display Document Link -->
-                                <a href="{{ asset('storage/' . ($d->no_do)) }}" target="_blank">Download Document</a>
+                            @if ($deliv)
+                                <a href="{{route('admin.pesanan.previewdo',$deliv->id)}}">Lihat Pdf</a>
                             @else
-                                <!-- For other file types, show a generic link -->
-                                <a href="{{ asset('storage/' . ($d->no_do)) }}" target="_blank">Download File</a>
+                            <span>Belum Ada Dokumen</span>
                             @endif
+                           
                         </td>
                         <td>
                             @php
@@ -153,8 +145,17 @@
                                                 <input type="file" name="invoice" class="form-control" >
                                             </div>
                                             <div class="mb-3">
-                                                <label for="po" class="form-label">No Do</label>
-                                                <input type="file" name="no_do" class="form-control" >
+                                                {{-- <label for="po" class="form-label">No Do</label> --}}
+                                                @php
+                                                    $delivery = \App\Models\DeliveryOrderM::where('pembeli_id',$d->id)->first();
+                                                    
+                                                    @endphp
+                                                @if ($delivery)
+                                                <a href="{{route('admin.pesanan.editdo',$delivery->id)}}" class="btn btn-primary">Edit Data DO</a>
+                                                <input type="hidden" name="no_do" value="{{$delivery->id}}" class="form-control" >
+                                                @else
+                                                <a href="{{route('admin.pesanan.isido',$d->id)}}" class="btn btn-primary">Isi Data DO</a>
+                                                @endif
                                             </div>
                                             <div class="mb-3">
                                                 <label for="po" class="form-label">Faktur Pajak</label>

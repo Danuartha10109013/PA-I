@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DeliveryOrderM;
 use App\Models\PembelianM;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,5 +44,11 @@ class PesananController extends Controller
         $data->status_pembayaran = 'payed';
         $data->save();
         return redirect()->back()->with('success','Terimakasih telah melakukan pembayaran');
+    }
+
+    public function do($id){
+        $data = DeliveryOrderM::find($id);
+
+        return view('pages.admin.k-pembelian.preview-do-pdf',compact('data'));
     }
 }

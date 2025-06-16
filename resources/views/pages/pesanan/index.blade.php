@@ -82,18 +82,11 @@
                         </div>
                         <div class="col-md-4">
                             <h5 class="text-center">Dokumen DO</h5>
-                            @php
-                                $filePath = storage_path('app/' . $data->no_do);
-                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                            @endphp
+                            
 
                             <div class="text-center">
-                                @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
-                                    <img src="{{ asset('storage/' . $data->no_do) }}" alt="no_do" style="width: 100px; height: auto;" class="rounded">
-                                @elseif($fileExtension === 'pdf')
-                                    <a href="{{ asset('storage/' . $data->no_do) }}" target="_blank" class="btn btn-danger">View PDF</a>
-                                    @elseif($fileExtension === 'docx')
-                                    <a href="{{ asset('storage/' . $data->no_do) }}" target="_blank" class="btn btn-secondary">Download File</a>
+                                @if($data->no_do)
+                                <a href="{{route('pembeli.pesanan.do',$data->no_do)}}">Lihat Dokumen</a>
                                 @else
                                 <p>Document not Available</p>
                                 @endif
