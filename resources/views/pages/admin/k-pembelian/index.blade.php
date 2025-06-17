@@ -50,31 +50,19 @@
                             
                         <td>&nbsp;&nbsp;&nbsp;{{ $d->status }}</td>
                         
-                        <td>
                             @php
-                                $filePath = storage_path('app/' . $d->invoice); // Adjust according to where the file is stored
-                                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                                $deliv = \App\Models\DeliveryOrderM::where('pembeli_id',$d->id)->first();
+                                $inv = \App\Models\InvoiceM::where('pembeli_id',$d->id)->first();
                             @endphp
-                        
-                            @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
-                                <!-- Display Image Preview -->
-                                <img src="{{ asset('storage/' . ($d->invoice)) }}" alt="invoice" style="width: 100px; height: auto;">
-                            @elseif(in_array($fileExtension, ['pdf']))
-                                <!-- Display PDF Link -->
-                                <a href="{{ asset('storage/' . ($d->invoice)) }}" target="_blank">View PDF</a>
-                            @elseif(in_array($fileExtension, ['doc', 'docx', 'xls', 'xlsx']))
-                                <!-- Display Document Link -->
-                                <a href="{{ asset('storage/' . ($d->invoice)) }}" target="_blank">Download Document</a>
+                        <td>
+                            
+                            @if ($inv)
+                                <a href="{{route('admin.pesanan.previewinvoice',$inv->id)}}">Lihat Pdf</a>
                             @else
-                                <!-- For other file types, show a generic link -->
-                                <a href="{{ asset('storage/' . ($d->invoice)) }}" target="_blank">Download File</a>
+                            <span>Belum Ada Dokumen</span>
                             @endif
                         </td>
                         <td>
-                            @php
-                                $deliv = \App\Models\DeliveryOrderM::where('pembeli_id',$d->id)->first();
-
-                            @endphp
                             @if ($deliv)
                                 <a href="{{route('admin.pesanan.previewdo',$deliv->id)}}">Lihat Pdf</a>
                             @else
@@ -140,16 +128,26 @@
 
                                             <div class="mb-3">
                                             
-                                            <div class="mb-3">
-                                                <label for="po" class="form-label">Invoice</label>
-                                                <input type="file" name="invoice" class="form-control" >
-                                            </div>
-                                            <div class="mb-3">
-                                                {{-- <label for="po" class="form-label">No Do</label> --}}
-                                                @php
+                                                    {{-- <label for="po" class="form-label">No Do</label> --}}
+                                                    @php
                                                     $delivery = \App\Models\DeliveryOrderM::where('pembeli_id',$d->id)->first();
-                                                    
+                                                    $invoice = \App\Models\InvoiceM::where('pembeli_id',$d->id)->first();
                                                     @endphp
+                                                <div class="mb-3">
+                                                    {{-- <label for="po" class="form-label">Invoice</label>
+                                                    <input type="file" name="invoice" class="form-control" > --}}
+                                                @if ($invoice)
+
+                                                    <a href="{{route('admin.pesanan.editinvoice',$invoice->id)}}" class="btn btn-primary">Edit Data Invoice</a>
+                                                <input type="hidden" name="invoice" value="{{$invoice->id}}" class="form-control" >
+
+                                                @else
+
+                                                <a href="{{route('admin.pesanan.isiinvoice',$d->id)}}" class="btn btn-primary">Isi Data Invoice</a>
+                                                @endif
+                                                </div>
+                                                <div class="mb-3">
+
                                                 @if ($delivery)
                                                 <a href="{{route('admin.pesanan.editdo',$delivery->id)}}" class="btn btn-primary">Edit Data DO</a>
                                                 <input type="hidden" name="no_do" value="{{$delivery->id}}" class="form-control" >

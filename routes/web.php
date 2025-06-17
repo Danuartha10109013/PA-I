@@ -188,6 +188,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/isi/invoice/{id}',[KPembelianController::class, 'invoice'])->name('pesanan.isiinvoice');
             Route::get('/edit/invoice/{id}',[KPembelianController::class, 'editinvoice'])->name('pesanan.editinvoice');
             Route::post('/save/invoice',[KPembelianController::class, 'saveinvoice'])->name('pesanan.saveinvoice');
+            Route::put('/update/invoice',[KPembelianController::class, 'saveinvoice'])->name('pesanan.updateinvoice');
             Route::get('/preview/invoice/{id}',[KPembelianController::class, 'invoice_preview'])->name('pesanan.previewinvoice');
 
         });
@@ -207,6 +208,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         Route::prefix('pesanan')->group(function () {
             Route::get('/',[PesananController::class, 'index'])->name('pesanan');
             Route::get('/do/{id}',[PesananController::class, 'do'])->name('pesanan.do');
+            Route::get('/invoice/{id}',[PesananController::class, 'invoice'])->name('pesanan.invoice');
 
         });
         Route::prefix('testimoni')->group(function () {

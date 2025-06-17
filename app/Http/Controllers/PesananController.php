@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeliveryOrderM;
+use App\Models\InvoiceM;
 use App\Models\PembelianM;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,5 +51,10 @@ class PesananController extends Controller
         $data = DeliveryOrderM::find($id);
 
         return view('pages.admin.k-pembelian.preview-do-pdf',compact('data'));
+    }
+    public function invoice($id){
+        $data = InvoiceM::find($id);
+
+        return view('pages.admin.k-pembelian.preview-invoice-pdf',compact('data'));
     }
 }

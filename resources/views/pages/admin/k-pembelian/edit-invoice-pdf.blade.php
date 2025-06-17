@@ -191,131 +191,135 @@
 
     <!-- Form Start -->
     <form action="{{ route('admin.pesanan.saveinvoice') }}" method="POST" enctype="multipart/form-data">
-      @csrf
-      <input type="hidden" name="pembeli_id" value="{{$pembelian->id}}">
+  @csrf
 
-      <!-- DO Info Table -->
-      <table class="do-info">
-        <tr>
-          <td style="background: #cce5ff">DO No</td>
-          <td><input type="text" name="no_invoice" value="{{ $no_invoice }}" readonly></td>
-        </tr>
-        <tr>
-          <td style="background: #cce5ff">Ref No PO</td>
-          <td><input type="text" name="no_ref" value="{{ $no_ref }}" readonly></td>
-        </tr>
-        <tr>
-          <td style="background: #cce5ff">Invoice Date</td>
-          <td><input type="date" name="date" required></td>
-        </tr>
-        <tr>
-          <td style="background: #cce5ff">Due Date</td>
-          <td><input type="date" name="due_date" required></td>
-        </tr>
-      </table>
+  <input type="hidden" name="pembeli_id" value="{{ $data->pembeli_id }}">
 
-      <!-- TO Section -->
-      <table class="to-table">
-        <thead>
-          <tr><th>TO:</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong><input type="text" name="pt_penerima" value="{{ $pesanan->company_name }}" required></strong></td></tr>
-          <tr><td><input type="text" name="alamat" value="{{ $pesanan->alamat_perusahaan }}" required></td></tr>
-        </tbody>
-      </table>
+  <!-- DO Info Table -->
+  <table class="do-info">
+    <tr>
+      <td style="background: #cce5ff">DO No</td>
+      <td><input type="text" name="no_invoice" value="{{ $data->no_invoice }}" readonly></td>
+    </tr>
+    <tr>
+      <td style="background: #cce5ff">Ref No PO</td>
+      <td><input type="text" name="no_ref" value="{{ $data->no_ref }}" readonly></td>
+    </tr>
+    <tr>
+      <td style="background: #cce5ff">Invoice Date</td>
+      <td><input type="date" name="date" value="{{ $data->date }}" required></td>
+    </tr>
+    <tr>
+      <td style="background: #cce5ff">Due Date</td>
+      <td><input type="date" name="due_date" value="{{ $data->due_date }}" required></td>
+    </tr>
+  </table>
 
-      <!-- Item Table -->
-      <table class="description-table">
-        <thead>
-          <tr>
-            <th>DESCRIPTION</th>
-            <th>QTY</th>
-            <th>PRICE</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input type="text" name="product" value="{{ $product->name }}" required><br />
-              <input type="text" name="description" value="{{ \Illuminate\Support\Str::words($product->deskripsi, 13, '') }}" required>
-            </td>
-            <td>
-              <input type="number" name="qty" id="qty" min="1" value="1" required> Unit
-            </td>
-            <td>
-              <input type="number" name="price" id="price" min="1" value="{{ $pembelian->nominal }}" required oninput="calculateTotals()"> <br>
-              <small id="price_rp"></small>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td><strong>TOTAL</strong></td>
-            <td>
-              <input type="text" id="total" name="total" readonly required>
-              <br><small id="total_rp"></small>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td><strong>DPP Lain</strong></td>
-            <td>
-              <input type="text" id="dpp" name="dpp" readonly>
-              <br><small id="dpp_rp"></small>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td><strong>VAT</strong></td>
-            <td>
-              <input type="text" id="vat" name="vat" readonly>
-              <br><small id="vat_rp"></small>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="2" style="text-align: center; font-weight: bold">Grand Total</td>
-            <td>
-              <input type="text" id="grand_total" name="grand_total" readonly required>
-              <br><small id="grand_rp"></small> 
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+  <!-- TO Section -->
+  <table class="to-table">
+    <thead>
+      <tr><th>TO:</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong><input type="text" name="pt_penerima" value="{{ $data->pt_penerima }}" required></strong></td></tr>
+      <tr><td><input type="text" name="alamat" value="{{ $data->alamat }}" required></td></tr>
+    </tbody>
+  </table>
 
-      <!-- Notes -->
-      <table class="note-table">
-        <thead>
-          <tr><th>Our Bank Detail</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>PT. TRISURYA SOLUSINDO UTAMA</strong></td></tr>
-          <tr><td>Bank Account No: <input type="number" name="bank_account" required></td></tr>
-          <tr><td>Bank - <input type="text" name="bank_account_name" required> Cabang Lippo Cikarang</td></tr>
-        </tbody>
-      </table>
+  <!-- Item Table -->
+  <table class="description-table">
+    <thead>
+      <tr>
+        <th>DESCRIPTION</th>
+        <th>QTY</th>
+        <th>PRICE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input type="text" name="product" value="{{ $data->product }}" required><br />
+          <input type="text" name="description" value="{{ $data->description }}" required>
+        </td>
+        <td>
+          <input type="number" name="qty" id="qty" min="1" value="{{ $data->qty }}" required> Unit
+        </td>
+        <td>
+          <input type="number" name="price" id="price" min="1" value="{{ $data->price }}" required oninput="calculateTotals()"><br>
+          <small id="price_rp"></small>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><strong>TOTAL</strong></td>
+        <td>
+          <input type="text" id="total" name="total" value="{{ $data->total }}" readonly required>
+          <br><small id="total_rp"></small>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><strong>DPP Lain</strong></td>
+        <td>
+          <input type="text" id="dpp" name="dpp" value="{{ $data->dpp }}" readonly>
+          <br><small id="dpp_rp"></small>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><strong>VAT</strong></td>
+        <td>
+          <input type="text" id="vat" name="vat" value="{{ $data->vat }}" readonly>
+          <br><small id="vat_rp"></small>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" style="text-align: center; font-weight: bold">Grand Total</td>
+        <td>
+          <input type="text" id="grand_total" name="grand_total" value="{{ $data->grand_total }}" readonly required>
+          <br><small id="grand_rp"></small> 
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 
+  <!-- Notes -->
+  <table class="note-table">
+    <thead>
+      <tr><th>Our Bank Detail</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>PT. TRISURYA SOLUSINDO UTAMA</strong></td></tr>
+      <tr><td>Bank Account No: <input type="number" name="bank_account" value="{{ $data->bank_account }}" required></td></tr>
+      <tr><td>Bank - <input type="text" name="bank_account_name" value="{{ $data->bank_name }}" required> Cabang Lippo Cikarang</td></tr>
+    </tbody>
+  </table>
 
-      <!-- Signatures -->
-      <div class="signatures">
-        <div class="hidden"></div>
-        <div class="signature-block">
-          <div class="date">Cikarang , <input type="date" name="date_kirim"></div>
-          Best Regards,<br><br>
-          <div class="signature-line"></div>
-          <input type="file" name="best_regards_signature" accept="image/*" onchange="previewSignature(this, 'bestregards_preview')"><br>
-          <img id="bestregards_preview" src="" style="max-height: 80px; display: none; margin: 10px auto;">
-          <input type="text" name="best_regards" placeholder="Your Name">
-        </div>
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="hidden"></div>
+    <div class="signature-block">
+      <div class="date">Cikarang , <input type="date" name="date_kirim" value="{{ $data->date_kirim }}"></div>
+      Best Regards,<br><br>
+      <div class="signature-line"></div>
+      <input type="file" name="best_regards_signature" accept="image/*" onchange="previewSignature(this, 'bestregards_preview')"><br>
+      @if ($data->best_regards_signature)
+        <img id="bestregards_preview" src="{{ asset('storage/' . $data->best_regards_signature) }}" style="max-height: 80px; margin: 10px auto; display:block;">
+      @else
+        <img id="bestregards_preview" src="" style="max-height: 80px; display:none; margin: 10px auto;">
+      @endif
+      <input type="text" name="best_regards" value="{{ $data->best_regards }}" placeholder="Your Name">
+    </div>
+  </div>
 
-      </div>
+  <!-- Submit Button -->
+  <div style="margin-top: 30px; text-align: center;">
+    <button type="submit" class="btn btn-primary">Update Invoice</button>
+  </div>
+</form>
 
-      <!-- Submit Button -->
-      <div style="margin-top: 30px; text-align: center;">
-        <button type="submit" class="btn btn-primary">Simpan Invoice</button>
-      </div>
-    </form>
 
     <!-- Footer -->
     
