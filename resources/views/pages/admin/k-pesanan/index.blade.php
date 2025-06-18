@@ -66,9 +66,76 @@
                                 @if ($count >= 1)
                                     Account Has Been Created
                                 @else
-                                <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal" data-url="{{ route('admin.pemesanan.active', $d->id) }}">
-                                    Activate An Account
-                                </a>
+ <a 
+  href="javascript:void(0);" 
+  class="btn btn-primary" 
+  data-bs-toggle="modal" 
+  data-bs-target="#konfirmasiModal" 
+  data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
+  Setujui Pemesanan
+</a>
+
+<div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" id="konfirmasiForm">
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>Apakah Anda yakin ingin menyetujui pemesanan ini <br> sebagai pembeli?</p>
+          <div class="mb-3">
+            <label for="harga_display" class="form-label">Harga</label>
+            <input 
+              type="text" 
+              id="harga_display" 
+              class="form-control" 
+              required 
+              style="outline: 2px solid #0d6efd;" 
+              oninput="formatRupiah(this)">
+            <input type="hidden" name="nominal" id="harga_asli">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Setujui</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const konfirmasiModal = document.getElementById('konfirmasiModal');
+  const konfirmasiForm = document.getElementById('konfirmasiForm');
+
+  konfirmasiModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const url = button.getAttribute('data-url');
+
+    konfirmasiForm.action = url;
+
+    // Reset input saat modal dibuka
+    document.getElementById('harga_display').value = '';
+    document.getElementById('harga_asli').value = '';
+  });
+
+  // Format ke Rupiah saat input diketik
+  window.formatRupiah = function(el) {
+    let value = el.value.replace(/[^\d]/g, '');
+    let formatted = new Intl.NumberFormat('id-ID').format(value);
+    el.value = 'Rp ' + formatted;
+    document.getElementById('harga_asli').value = value;
+  };
+});
+</script>
+
+
+
                                 @endif
 
                                 <!-- Delete Button -->
@@ -76,25 +143,25 @@
                                 class="btn btn-danger" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#deleteModal" 
-                                data-id="{{ $d->id }}">Hapus</a>
+                                data-id="{{ $d->id }}">Nonaktif</a>
 
                                 <!-- Delete Confirmation Modal -->
                                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                                            <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Nonaktif</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Apakah Anda yakin ingin menghapus item ini?
+                                            Apakah Anda yakin ingin mengnonaktifkan item ini?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                                             <form id="deleteForm" method="POST" action="">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                <button type="submit" class="btn btn-danger">Nonaktif</button>
                                             </form>
                                         </div>
                                     </div>
@@ -115,41 +182,8 @@
 
 
                                 <!-- Confirmation Modal -->
-                                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                        Are you sure you want to activate this account?
-                                        </div>
-                                        <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form method="POST" id="confirmForm">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary">Yes, Activate</button>
-                                        </form>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </div>
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        const confirmModal = document.getElementById('confirmModal');
-                                        const confirmForm = document.getElementById('confirmForm');
-                                        
-                                        confirmModal.addEventListener('show.bs.modal', event => {
-                                            // Button that triggered the modal
-                                            const button = event.relatedTarget;
-                                            const url = button.getAttribute('data-url');
-                                            
-                                            // Update the form action
-                                            confirmForm.action = url;
-                                        });
-                                    });
-                                </script>
+                                
+
                             </td>
                         </tr>
                         @empty

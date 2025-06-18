@@ -20,17 +20,57 @@
                                 $pesanan = \App\Models\PesananM::where('uuid',$user->user_token)->first();
                             @endphp
                             @if($pesanan)
-                            Name: <strong>{{ $pesanan->name }}</strong> Email: <strong>{{ $pesanan->email }}</strong><br>
+                                Name: <strong>{{ $pesanan->name }}</strong>
+                                <span id="dot-{{ $user->user_token }}" class="badge bg-danger rounded-circle ms-1 d-none"
+                                    style="width:5px; height:10px;">&nbsp;</span>
+                                Email: <strong>{{ $pesanan->email }}</strong><br>
                             @endif
-                            &nbsp;&nbsp;<small class="text-muted">Last chat: {{ \Carbon\Carbon::parse($user->last_chat)->diffForHumans() }}</small>
+                            <small class="text-muted">Last chat: {{ \Carbon\Carbon::parse($user->last_chat)->diffForHumans() }}</small>
                         </span>
                         <a href="{{ route('admin.k-chat.message', $user->user_token) }}" class="btn btn-sm btn-primary">
                             Lihat Chat
                         </a>
                     </li>
+
+
                 @endforeach
             </ul>
         @endif
     </div>
 </div>
+<script>
+    const lastSeenChats = {}; // Simpan ID terakhir saat pertama load
+
+    function fetchLastSeen() {
+        fetch('/chat/latest-id')
+            .then(response => response.json())
+            .then(data => {
+                // Simpan semua last seen saat pertama kali load
+                for (const token in data) {
+                    lastSeenChats[token] = data[token];
+                }
+            });
+    }
+
+    function checkNewChats() {
+        fetch('/chat/latest-id')
+            .then(response => response.json())
+            .then(data => {
+                for (const token in data) {
+                    const dot = document.getElementById('dot-' + token);
+                    if (lastSeenChats[token] !== undefined && data[token] > lastSeenChats[token]) {
+                        dot.classList.remove('d-none');
+                    } else {
+                        dot.classList.add('d-none');
+                    }
+                }
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchLastSeen();
+        setInterval(checkNewChats, 1000); // Cek setiap 10 detik
+    });
+</script>
+
 @endsection

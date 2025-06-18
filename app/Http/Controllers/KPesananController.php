@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PemesananExport;
+use App\Mail\AccPemesananMail;
 use App\Models\PembelianM;
 use App\Models\PesananM;
+use App\Models\ProdukM;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Midtrans\Config;
 use Midtrans\Snap;
@@ -55,8 +58,50 @@ class KPesananController extends Controller
         $jadi->product_id = $data->product_id;
         $jadi->status_pembayaran ='pending';
         $jadi->save();
+        $product = ProdukM::find($data->product_id);
+        $produk   = $product->name;
+        $harga    = $request->nominal;
+        $nama     = $data->name;
+        $email    = $data->email;
+        $password = 'Trisurya'; // Bisa digenerate secara acak atau default
+
+        // Kirim email ke klien
+        Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+        return redirect()->back()->with('success', 'User Has Been Created');
+    }
+    public function actives(Request $request,$id){
+        // dd($request->all());
+        $data = PesananM::find($id);
+        // dd($data);
+
+        $user= new User();
+        $user->name = $data->name;
+        $user->username = $data->name;
+        $user->email = $data->email;
+        $user->role = 1;
+        $user->active = 1;
+        $user->nominal = $request->nominal;
+        $user->password = Hash::make('Trisurya');
+        $user->save();
 
 
+
+        $jadi = new PembelianM();
+        $jadi->user_id = $user->id;
+        $jadi->nominal = $request->nominal;
+        $jadi->product_id = $data->product_id;
+        $jadi->status_pembayaran ='pending';
+        $jadi->save();
+
+        $product = ProdukM::find($data->product_id);
+        $produk   = $product->name;
+        $harga    = $request->nominal;
+        $nama     = $data->name;
+        $email    = $data->email;
+        $password = 'Trisurya'; // Bisa digenerate secara acak atau default
+
+        // Kirim email ke klien
+        Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
         return redirect()->back()->with('success', 'User Has Been Created');
     }
 
@@ -79,6 +124,9 @@ class KPesananController extends Controller
         // dd($id);
         $data = PesananM::find($id);
         if($data){
+            $user = User::where('email',$data->email)->first();
+            $user->active = 0;
+            $user->save();
             $data->delete();
             return redirect()->back()->with('success','Pemesan telah berhasil dihapus');
         }else{
