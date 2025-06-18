@@ -34,6 +34,8 @@ return array(
     'App\\Models\\AboutM' => $baseDir . '/app/Models/AboutM.php',
     'App\\Models\\Chat' => $baseDir . '/app/Models/Chat.php',
     'App\\Models\\CustomerM' => $baseDir . '/app/Models/CustomerM.php',
+    'App\\Models\\DeliveryOrderM' => $baseDir . '/app/Models/DeliveryOrderM.php',
+    'App\\Models\\InvoiceM' => $baseDir . '/app/Models/InvoiceM.php',
     'App\\Models\\JenisM' => $baseDir . '/app/Models/JenisM.php',
     'App\\Models\\KategoriM' => $baseDir . '/app/Models/KategoriM.php',
     'App\\Models\\KontakM' => $baseDir . '/app/Models/KontakM.php',

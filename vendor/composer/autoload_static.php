@@ -598,6 +598,8 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'App\\Models\\AboutM' => __DIR__ . '/../..' . '/app/Models/AboutM.php',
         'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
         'App\\Models\\CustomerM' => __DIR__ . '/../..' . '/app/Models/CustomerM.php',
+        'App\\Models\\DeliveryOrderM' => __DIR__ . '/../..' . '/app/Models/DeliveryOrderM.php',
+        'App\\Models\\InvoiceM' => __DIR__ . '/../..' . '/app/Models/InvoiceM.php',
         'App\\Models\\JenisM' => __DIR__ . '/../..' . '/app/Models/JenisM.php',
         'App\\Models\\KategoriM' => __DIR__ . '/../..' . '/app/Models/KategoriM.php',
         'App\\Models\\KontakM' => __DIR__ . '/../..' . '/app/Models/KontakM.php',
