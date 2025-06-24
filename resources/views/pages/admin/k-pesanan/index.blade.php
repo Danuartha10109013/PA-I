@@ -66,6 +66,16 @@
                                 @if ($count >= 1)
                                     Account Has Been Created
                                 @else
+<<<<<<< HEAD
+ <a 
+  href="javascript:void(0);" 
+  class="btn btn-primary" 
+  data-bs-toggle="modal" 
+  data-bs-target="#konfirmasiModal" 
+  data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
+  Acivate an Account
+</a>
+=======
                                     <a 
                                     href="javascript:void(0);" 
                                     class="btn btn-primary" 
@@ -74,6 +84,7 @@
                                     data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
                                     Activate An Account
                                     </a>
+>>>>>>> 94d1445350b112d51f83821fcb8c7069c0421399
 
                                     <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
