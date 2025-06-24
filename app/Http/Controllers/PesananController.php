@@ -6,6 +6,7 @@ use App\Models\DeliveryOrderM;
 use App\Models\InvoiceM;
 use App\Models\PembelianM;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
@@ -56,5 +57,21 @@ class PesananController extends Controller
         $data = InvoiceM::find($id);
 
         return view('pages.admin.k-pembelian.preview-invoice-pdf',compact('data'));
+    }
+     public function dodownload($id)
+    {
+        $data = DeliveryOrderM::find($id);
+
+        $pdf = Pdf::loadView('pages.admin.k-pembelian.preview-do-pdf-dw', compact('data'));
+
+        return $pdf->download('DeliveryOrder-' . $data->pt_penerima . '.pdf');
+    }
+     public function invoicedownload($id)
+    {
+        $data = InvoiceM::find($id);
+
+        $pdf = Pdf::loadView('pages.admin.k-pembelian.preview-invoice-pdf-dw', compact('data'));
+
+        return $pdf->download('invoice-' . $data->pt_penerima . '.pdf');
     }
 }

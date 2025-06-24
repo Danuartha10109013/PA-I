@@ -67,7 +67,7 @@
 
                             <div class="text-center">
                                 @if($data->invoice)
-                                <a href="{{route('pembeli.pesanan.invoice',$data->invoice)}}">Lihat Dokumen</a>
+                                <a href="{{route('pembeli.pesanan.invoice',$data->invoice)}}">Download Dokumen</a>
                                 @else
                                 <p>Document not Available</p>
                                 @endif
@@ -79,7 +79,7 @@
 
                             <div class="text-center">
                                 @if($data->no_do)
-                                <a href="{{route('pembeli.pesanan.do',$data->no_do)}}">Lihat Dokumen</a>
+                                <a href="{{route('pembeli.pesanan.do',$data->no_do)}}">Download Dokumen</a>
                                 @else
                                 <p>Document not Available</p>
                                 @endif

@@ -225,8 +225,8 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('pesanan')->group(function () {
             Route::get('/',[PesananController::class, 'index'])->name('pesanan');
-            Route::get('/do/{id}',[PesananController::class, 'do'])->name('pesanan.do');
-            Route::get('/invoice/{id}',[PesananController::class, 'invoice'])->name('pesanan.invoice');
+            Route::get('/do/{id}',[PesananController::class, 'dodownload'])->name('pesanan.do');
+            Route::get('/invoice/{id}',[PesananController::class, 'invoicedownload'])->name('pesanan.invoice');
 
         });
         Route::prefix('testimoni')->group(function () {
