@@ -174,7 +174,7 @@
     <!-- Header -->
     <div class="header">
       <img src="{{ public_path('TSR1.png') }}" alt="Logo" class="logo" />
-      <div class="company-details">
+      <div class="company-details" style="margin-top: -80px">
         <div class="company-name">PT. TRISURYA SOLUSINDO UTAMA</div>
         <div class="slogan">Weighing Solution and System Integrator</div>
         Head Office: Ruko Poris Residence Blok A2 No 17, Tangerang - Banten<br />
