@@ -31,6 +31,7 @@ return array(
     'App\\Http\\Controllers\\TestimoniController' => $baseDir . '/app/Http/Controllers/TestimoniController.php',
     'App\\Http\\Middleware\\AutoLogout' => $baseDir . '/app/Http/Middleware/AutoLogout.php',
     'App\\Http\\Middleware\\PembeliMiddleware' => $baseDir . '/app/Http/Middleware/PembeliMiddleware.php',
+    'App\\Mail\\AccPemesananMail' => $baseDir . '/app/Mail/AccPemesananMail.php',
     'App\\Models\\AboutM' => $baseDir . '/app/Models/AboutM.php',
     'App\\Models\\Chat' => $baseDir . '/app/Models/Chat.php',
     'App\\Models\\CustomerM' => $baseDir . '/app/Models/CustomerM.php',

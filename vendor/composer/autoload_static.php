@@ -595,6 +595,7 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'App\\Http\\Controllers\\TestimoniController' => __DIR__ . '/../..' . '/app/Http/Controllers/TestimoniController.php',
         'App\\Http\\Middleware\\AutoLogout' => __DIR__ . '/../..' . '/app/Http/Middleware/AutoLogout.php',
         'App\\Http\\Middleware\\PembeliMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/PembeliMiddleware.php',
+        'App\\Mail\\AccPemesananMail' => __DIR__ . '/../..' . '/app/Mail/AccPemesananMail.php',
         'App\\Models\\AboutM' => __DIR__ . '/../..' . '/app/Models/AboutM.php',
         'App\\Models\\Chat' => __DIR__ . '/../..' . '/app/Models/Chat.php',
         'App\\Models\\CustomerM' => __DIR__ . '/../..' . '/app/Models/CustomerM.php',
