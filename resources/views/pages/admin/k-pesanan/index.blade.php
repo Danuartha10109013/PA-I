@@ -66,6 +66,7 @@
                                 @if ($count >= 1)
                                     Account Has Been Created
                                 @else
+<<<<<<< HEAD
  <a 
   href="javascript:void(0);" 
   class="btn btn-primary" 
@@ -74,67 +75,75 @@
   data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
   Acivate an Account
 </a>
+=======
+                                    <a 
+                                    href="javascript:void(0);" 
+                                    class="btn btn-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#konfirmasiModal" 
+                                    data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
+                                    Activate An Account
+                                    </a>
+>>>>>>> 94d1445350b112d51f83821fcb8c7069c0421399
 
-<div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="POST" id="konfirmasiForm">
-        @csrf
-        <div class="modal-header">
-          <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-        </div>
+                                    <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                        <form method="POST" id="konfirmasiForm">
+                                            @csrf
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                            </div>
 
-        <div class="modal-body">
-          <p>Apakah Anda yakin ingin menyetujui pemesanan ini <br> sebagai pembeli?</p>
-          <div class="mb-3">
-            <label for="harga_display" class="form-label">Harga</label>
-            <input 
-              type="text" 
-              id="harga_display" 
-              class="form-control" 
-              required 
-              style="outline: 2px solid #0d6efd;" 
-              oninput="formatRupiah(this)">
-            <input type="hidden" name="nominal" id="harga_asli">
-          </div>
-        </div>
+                                            <div class="modal-body">
+                                            <p>Apakah Anda yakin ingin menyetujui pemesanan ini <br> sebagai pembeli?</p>
+                                            <div class="mb-3">
+                                                <label for="harga_display" class="form-label">Harga</label>
+                                                <input 
+                                                type="text" 
+                                                id="harga_display" 
+                                                class="form-control" 
+                                                required 
+                                                style="outline: 2px solid #0d6efd;" 
+                                                oninput="formatRupiah(this)">
+                                                <input type="hidden" name="nominal" id="harga_asli">
+                                            </div>
+                                            </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-primary">Setujui</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const konfirmasiModal = document.getElementById('konfirmasiModal');
-  const konfirmasiForm = document.getElementById('konfirmasiForm');
+                                            <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary">Setujui</button>
+                                            </div>
+                                        </form>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                    const konfirmasiModal = document.getElementById('konfirmasiModal');
+                                    const konfirmasiForm = document.getElementById('konfirmasiForm');
 
-  konfirmasiModal.addEventListener('show.bs.modal', event => {
-    const button = event.relatedTarget;
-    const url = button.getAttribute('data-url');
+                                    konfirmasiModal.addEventListener('show.bs.modal', event => {
+                                        const button = event.relatedTarget;
+                                        const url = button.getAttribute('data-url');
 
-    konfirmasiForm.action = url;
+                                        konfirmasiForm.action = url;
 
-    // Reset input saat modal dibuka
-    document.getElementById('harga_display').value = '';
-    document.getElementById('harga_asli').value = '';
-  });
+                                        // Reset input saat modal dibuka
+                                        document.getElementById('harga_display').value = '';
+                                        document.getElementById('harga_asli').value = '';
+                                    });
 
-  // Format ke Rupiah saat input diketik
-  window.formatRupiah = function(el) {
-    let value = el.value.replace(/[^\d]/g, '');
-    let formatted = new Intl.NumberFormat('id-ID').format(value);
-    el.value = 'Rp ' + formatted;
-    document.getElementById('harga_asli').value = value;
-  };
-});
-</script>
-
-
+                                    // Format ke Rupiah saat input diketik
+                                    window.formatRupiah = function(el) {
+                                        let value = el.value.replace(/[^\d]/g, '');
+                                        let formatted = new Intl.NumberFormat('id-ID').format(value);
+                                        el.value = 'Rp ' + formatted;
+                                        document.getElementById('harga_asli').value = value;
+                                    };
+                                    });
+                                    </script>
 
                                 @endif
 
