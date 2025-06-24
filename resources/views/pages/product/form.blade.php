@@ -92,12 +92,13 @@ PT. Trisurya Solusindo Utama || Pesan Product
                         <input type="email" name="email_perusahaan" class="form-control" id="email_perusahaan" placeholder="Masukkan Email Perusahaan" >
                     </div>
                 </div>
+                <div class="col-md-6"></div>
+                <div class="col-md-4 text-center fw-bold">
+                    <button style="width: 50%;font-size: 18px;font-weight: bold" type="submit" class="btn btn-success"><i class="fa fa-comment"></i> Submit</button>
+                </div>
                 
                 <input type="hidden" name="prodct_id" value="{{$data->id}}">
-
-                <div class="col-md-12 text-center mt-4">
-                    <button type="submit" class="btn btn-success"><i class="fa fa-comment"></i> Submit</button>
-                </div>
+                
             </div>
         </form>
 </div>

@@ -90,12 +90,45 @@
               <span class="nav-link-text ms-1">About Us</span>
           </a>
       </li>
-      <li class="nav-item">
-          <a class="nav-link {{ Route::is('admin.k-chat') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('admin.k-chat') }}">
-              <i class="material-symbols-rounded opacity-5">chat</i>
-              <span class="nav-link-text ms-1">Chats</span>
-          </a>
-      </li>
+     @php
+    $notif = \App\Models\Chat::latest()->first();
+    @endphp
+    <li class="nav-item position-relative">
+        <a class="nav-link {{ Route::is('admin.k-chat') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('admin.k-chat') }}">
+            <i class="material-symbols-rounded opacity-5">chat</i>
+            <span class="nav-link-text ms-1">Chats</span>
+            <span id="notif-dot"
+                class="position-absolute top-0 start-75 translate-middle p-1 bg-danger border border-light rounded-circle d-none">
+            </span>
+        </a>
+    </li>
+<script>
+    let lastSeenChatId = 0;
+
+    // Ambil ID terakhir saat pertama load
+    fetch('/chat/check-latest')
+        .then(response => response.json())
+        .then(data => {
+            lastSeenChatId = data.latest_id;
+        });
+
+    function checkNewChat() {
+        fetch('/chat/check-latest')
+            .then(response => response.json())
+            .then(data => {
+                const notifDot = document.getElementById('notif-dot');
+                if (data.latest_id > lastSeenChatId) {
+                    notifDot.classList.remove('d-none'); // tampilkan red dot
+                } else {
+                    notifDot.classList.add('d-none'); // sembunyikan red dot
+                }
+            });
+    }
+
+    // Cek setiap 10 detik
+    setInterval(checkNewChat, 1000);
+</script>
+
   </ul>
 </div>
 <div class="sidenav-footer position-absolute w-100 bottom-0 ">

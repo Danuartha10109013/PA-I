@@ -21,6 +21,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
 use App\Http\Middleware\AutoLogout;
+use App\Models\Chat;
 use App\Models\PesananM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,22 @@ Route::get('/download/{file}', function ($file) {
         return response()->download($filePath);
     }
     return abort(404, 'File not found');
+});
+
+Route::get('/chat/check-latest', function () {
+    $latestChat = Chat::latest('created_at')->first();
+    return response()->json([
+        'latest_id' => $latestChat?->id ?? 0
+    ]);
+});
+Route::get('/chat/latest-id', function () {
+    // Grup berdasarkan user_token dan ambil max(id)
+    $latestChats = Chat::selectRaw('user_token, MAX(id) as latest_id')
+        ->groupBy('user_token')
+        ->get()
+        ->pluck('latest_id', 'user_token');
+
+    return response()->json($latestChats);
 });
 Route::get('/cek-pesanan', function (Request $request) {
     $uuid = $request->query('uuid');
@@ -135,6 +152,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::get('/',[KPesananController::class, 'index'])->name('pemesanan');
             Route::post('/active/{id}',[KPesananController::class, 'active'])->name('pemesanan.active');
             Route::post('/active-baru/{id}',[KPesananController::class, 'active'])->name('pemesanan.active.baru');
+            Route::post('/active-barus/{id}',[KPesananController::class, 'actives'])->name('pemesanan.active.barus');
             Route::get('/message/{id}',[KPesananController::class, 'message'])->name('pemesanan.message');
             Route::get('/export',[KPesananController::class, 'export'])->name('pemesanan.export');
             Route::delete('/delete/{id}',[KPesananController::class, 'delete'])->name('pemesanan.delete');
