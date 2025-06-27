@@ -16,21 +16,25 @@ PT. Trisurya Solusindo Utama || Customer
         @foreach ($data as $d)
         @php
             $user = \App\Models\User::find($d->user_id);
-            $pesanan = \App\Models\PesananM::where('email',$user->email)->first();
+            // dd($user);
+            if($user){
+                $pesanan = \App\Models\PesananM::where('email',$user->email)->first();
+            }
             // dd($pesanan);
 
         @endphp
-        @if ($pesanan)
+        {{-- {{$d->logo}} --}}
+        {{-- @if ($pesanan) --}}
             <div class="col-md-3" data-aos="fade-up"> <!-- Increased card size -->
                 <div class="card text-center border-0 shadow-sm position-relative hover-animate">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center p-3">
                         <!-- Paragraf di dalam card -->
                         <p class="m-0 fw-bold" style="color: #333; font-size: 1.2rem;">{{ $pesanan->company_name }}</p>
-                        <img src="{{ asset('storage/'.$d->logo) }}" class="img-fluid logo-image mt-2" alt="{{ $pesanan->company_name }}">
+                        <img src="{{ asset('storage/'.$d->logo) }}" class="img-fluid logo-image mt-2" alt="{{ $d->logo }}">
                     </div>
                 </div>
             </div>
-        @endif
+        {{-- @endif --}}
 
         @endforeach
     </div>

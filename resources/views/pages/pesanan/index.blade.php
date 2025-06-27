@@ -154,6 +154,12 @@
     </div>
 
     <!-- Add Testimonial Section -->
+    @php
+        $pesanan = \App\Models\PesananM::where('email',Auth::user()->email)->first();
+        $testimoni = \App\Models\TestimoniM::where('company_name',$pesanan->company_name)->first();
+    @endphp
+    @if ($testimoni)
+    @else
     <div class="row mt-5" data-aos="fade-up" data-aos-delay="200">
         <div class="col-md-8 offset-md-2">
             <h2 class="fw-bold text-center mb-4" style="font-size: 28px; color: #007bff;">Add Customer Testimoni</h2>
@@ -254,6 +260,7 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script>

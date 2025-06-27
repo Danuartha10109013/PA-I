@@ -20,7 +20,7 @@
                         <th>No DO</th>
                         <th>Faktur Pajak</th>
                         <th>Nominal</th>
-                        <th>Status</th>
+                        <th>Status Pembayaran</th>
                         <th>Logo</th>
                         <th>Actions</th>
                     </tr>
@@ -87,7 +87,7 @@
                                 <a href="{{ asset('storage/' . ($d->faktur)) }}" target="_blank">Download Document</a>
                             @else
                                 <!-- For other file types, show a generic link -->
-                                <a href="{{ asset('storage/' . ($d->faktur)) }}" target="_blank">Download File</a>
+                                Belum Ada Dokumen
                             @endif
                         </td>
                         <td>
@@ -196,8 +196,8 @@
                         <th>No</th>
                         <th>Pembeli</th>
                         <th>Produk</th>
-                        <th>Status</th>
-                        <th>Bukti</th>
+                        <th>Status Pembayaran</th>
+                        <th>Faktur Pajak</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -224,24 +224,23 @@
                             @endif
                             
                         <td>&nbsp;&nbsp;&nbsp;{{ $d->status }}</td>
-                        <td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;
                             @php
-                                $filePath = storage_path('app/' . $d->bukti); // Adjust according to where the file is stored
+                                $filePath = storage_path('app/' . $d->faktur); // Adjust according to where the file is stored
                                 $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                             @endphp
                         
                             @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'bmp']))
                                 <!-- Display Image Preview -->
-                                <img src="{{ asset('storage/' . ($d->bukti)) }}" alt="Bukti" style="width: 100px; height: auto;">
+                                <img src="{{ asset('storage/' . ($d->faktur)) }}" alt="Bukti" style="width: 100px; height: auto;">
                             @elseif(in_array($fileExtension, ['pdf']))
                                 <!-- Display PDF Link -->
-                                <a href="{{ asset('storage/' . ($d->bukti)) }}" target="_blank">View PDF</a>
+                                <a href="{{ asset('storage/' . ($d->faktur)) }}" target="_blank">View PDF</a>
                             @elseif(in_array($fileExtension, ['doc', 'docx', 'xls', 'xlsx']))
                                 <!-- Display Document Link -->
-                                <a href="{{ asset('storage/' . ($d->bukti)) }}" target="_blank">Download Document</a>
+                                <a href="{{ asset('storage/' . ($d->faktur)) }}" target="_blank">Download Document</a>
                             @else
-                                <!-- For other file types, show a generic link -->
-                                <a href="{{ asset('storage/' . ($d->bukti)) }}" target="_blank">Download File</a>
+                               Belum Ada Dokumen
                             @endif
                         </td>
                         
@@ -250,7 +249,7 @@
                     @endforeach
                     @else
                     <tr>
-                        <td>Data Belom Ada</td>
+                        <td>Belum Ada Data</td>
                     </tr>
                     @endif
                     

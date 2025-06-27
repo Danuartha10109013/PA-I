@@ -23,6 +23,7 @@ class KPembelianController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         // Find the Pembeli by ID
         $pembeli = PembelianM::findOrFail($id);
 
@@ -34,6 +35,13 @@ class KPembelianController extends Controller
             'faktur' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
             'logo' => 'nullable|file|mimes:jpeg,png', 
         ]);
+
+        if($request->product == 'Selesai'){
+            $request->validate([
+                'faktur' => 'required|file|mimes:jpeg,jpg,png,pdf,docx',
+                'logo' => 'required|file|mimes:jpeg,png,jpg',
+            ]);
+        }
 
         // Update the status field
         $pembeli->status = $request->input('product');
