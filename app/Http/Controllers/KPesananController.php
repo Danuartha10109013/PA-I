@@ -128,7 +128,9 @@ class KPesananController extends Controller
             $user->active = 0;
             $user->save();
             $pembelian = PembelianM::where('user_id',$user->id)->first();
-            $pembelian->delete();
+            if($pembelian){
+                $pembelian->delete();
+            }
             $data->delete();
             return redirect()->back()->with('success','Pemesan telah berhasil dihapus');
         }else{
@@ -157,8 +159,8 @@ class KPesananController extends Controller
             'gross_amount' => 100000, // Total harga
         ],
         'customer_details' => [
-            'first_name' => 'Danu',
-            'email' => 'danu@example.com',
+            'first_name' => 'ica',
+            'email' => 'ica@example.com',
         ],
     ];
 
