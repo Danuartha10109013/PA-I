@@ -198,6 +198,7 @@ Route::middleware([AutoLogout::class])->group(function () {
         });
         Route::prefix('pesanan')->group(function () {
             Route::get('/',[KPembelianController::class, 'index'])->name('pesanan');
+            Route::get('/export',[KPembelianController::class, 'export'])->name('pesanan.export');
             Route::put('/update/{id}',[KPembelianController::class, 'update'])->name('pesanan.update');
             Route::get('/isi/{id}',[KPembelianController::class, 'do'])->name('pesanan.isido');
             Route::get('/edit/{id}',[KPembelianController::class, 'editdo'])->name('pesanan.editdo');

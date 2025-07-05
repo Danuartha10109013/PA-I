@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PembelianExport;
 use App\Models\DeliveryOrderM;
 use App\Models\InvoiceM;
 use App\Models\PembelianM;
@@ -12,6 +13,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class KPembelianController extends Controller
 {
@@ -328,5 +331,10 @@ public function saveinvoice(Request $request)
         $data = InvoiceM::find($id);
 
         return view('pages.admin.k-pembelian.edit-invoice-pdf',compact('data'));
+    }
+
+    public function export(){
+        $data = PembelianM::orderBy('created_at','desc')->get();
+        return Excel::download(new PembelianExport($data), 'Pembelian_Report.csv');
     }
 }

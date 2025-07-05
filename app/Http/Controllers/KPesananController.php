@@ -128,13 +128,15 @@ class KPesananController extends Controller
             if($user){
                 $user->active = 0;
                 $user->save();
-                $pembelian = PembelianM::where('user_id',$user->id)->first();
-                if($pembelian){
-                    $pembelian->delete();
-                }
+                // $pembelian = PembelianM::where('user_id',$user->id)->first();
+                // if($pembelian){
+                //     $pembelian->delete();
+                // }
+                return redirect()->back()->with('success','Pembeli Telah berhasil di nonaktifkan');
+            }else{
+                return redirect()->back()->with('error','Pembeli Tidak Ditemukan atau belum dibuatkan akun');
             }
-            $data->delete();
-            return redirect()->back()->with('success','Pemesan telah berhasil dihapus');
+            // $data->delete();
         }else{
             return redirect()->back()->with('error','Gagal Menghapus');
         }
