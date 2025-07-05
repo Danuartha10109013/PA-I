@@ -125,11 +125,13 @@ class KPesananController extends Controller
         $data = PesananM::find($id);
         if($data){
             $user = User::where('email',$data->email)->first();
-            $user->active = 0;
-            $user->save();
-            $pembelian = PembelianM::where('user_id',$user->id)->first();
-            if($pembelian){
-                $pembelian->delete();
+            if($user){
+                $user->active = 0;
+                $user->save();
+                $pembelian = PembelianM::where('user_id',$user->id)->first();
+                if($pembelian){
+                    $pembelian->delete();
+                }
             }
             $data->delete();
             return redirect()->back()->with('success','Pemesan telah berhasil dihapus');
