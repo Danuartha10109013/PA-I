@@ -7,7 +7,6 @@
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
             <h4>Kelola Pembelian</h4>
-                <a href="{{ route('admin.pesanan.export') }}" class="btn btn-warning"><i class="fa fa-download"></i> Export</a>
 
         </div>
         <div class="table-responsive">
@@ -190,6 +189,8 @@
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
             <h4>Pembelian Selesai</h4>
+                <a href="{{ route('admin.pesanan.export') }}" class="btn btn-warning"><i class="fa fa-download"></i> Export</a>
+
         </div>
         <div class="table-responsive">
             <table class="table table-bordered">

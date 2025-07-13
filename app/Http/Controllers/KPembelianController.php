@@ -334,7 +334,7 @@ public function saveinvoice(Request $request)
     }
 
     public function export(){
-        $data = PembelianM::orderBy('created_at','desc')->get();
+        $data = PembelianM::where('status','Selesai')->orderBy('created_at','desc')->get();
         return Excel::download(new PembelianExport($data), 'Pembelian_Report.csv');
     }
 }
