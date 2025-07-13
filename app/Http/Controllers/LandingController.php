@@ -48,7 +48,7 @@ class LandingController extends Controller
 
     public function customer(Request $request)
     {
-        $data = PembelianM::orderBy('created_at','desc')->get();
+        $data = CustomerM::where('status', 1)->orderBy('created_at','desc')->get();
         return view('pages.customer.index',compact('data'));
     }
     public function testimoni(Request $request)

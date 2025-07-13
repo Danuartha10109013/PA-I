@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PemesananExport;
 use App\Mail\AccPemesananMail;
+use App\Models\CustomerM;
 use App\Models\PembelianM;
 use App\Models\PesananM;
 use App\Models\ProdukM;
@@ -63,10 +64,16 @@ class KPesananController extends Controller
         $harga    = $request->nominal;
         $nama     = $data->name;
         $email    = $data->email;
+        $email_perusahaan    = $data->email_perusahaan;
         $password = 'Trisurya'; // Bisa digenerate secara acak atau default
 
         // Kirim email ke klien
-        Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+        if($email && $email_perusahaan){
+            Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+            Mail::to($email_perusahaan)->send(new AccPemesananMail($produk, $harga, $nama, $email_perusahaan, $password));
+        }else{
+            return redirect()->back()->with('error', 'Email tidak terkirim, dan email tidak ditemukan');
+        }
         return redirect()->back()->with('success', 'User Has Been Created');
     }
     public function actives(Request $request,$id){
@@ -98,10 +105,16 @@ class KPesananController extends Controller
         $harga    = $request->nominal;
         $nama     = $data->name;
         $email    = $data->email;
+        $email_perusahaan = $data->email_perusahaan;
         $password = 'Trisurya'; // Bisa digenerate secara acak atau default
 
         // Kirim email ke klien
-        Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+        if($email && $email_perusahaan){
+            Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+            Mail::to($email_perusahaan)->send(new AccPemesananMail($produk, $harga, $nama, $email_perusahaan, $password));
+        }else{
+            return redirect()->back()->with('error', 'Email tidak terkirim, dan email tidak ditemukan');
+        }
         return redirect()->back()->with('success', 'User Has Been Created');
     }
 
@@ -132,6 +145,11 @@ class KPesananController extends Controller
                 // if($pembelian){
                 //     $pembelian->delete();
                 // }
+                $customer = CustomerM::where('company_name',$data->company_name)->first();
+                if($customer){
+                    $customer->status = 0;
+                    $customer->save();
+                }
                 return redirect()->back()->with('success','Pembeli Telah berhasil di nonaktifkan');
             }else{
                 return redirect()->back()->with('error','Pembeli Tidak Ditemukan atau belum dibuatkan akun');

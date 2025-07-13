@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PembelianExport;
+use App\Models\CustomerM;
 use App\Models\DeliveryOrderM;
 use App\Models\InvoiceM;
 use App\Models\PembelianM;
@@ -73,7 +74,25 @@ class KPembelianController extends Controller
             // Store the file in the storage folder
             $filePath = $file->storeAs('logo', $file->getClientOriginalName(),'public');
             // You can update the database with the path of the file
-            $pembeli->logo = $filePath;
+            // $pembeli->logo = $filePath;
+            $customer = new CustomerM();
+            $user = User::find($pembeli->id);
+            if($user){
+                $pesanan = PesananM::where('email',$user->email)->first();
+                if($pesanan){
+
+                    $customer->company_name = $pesanan->company_name;
+                    $customer->name = $pesanan->name;
+                    $customer->status = 1;
+                    $customer->logo = $filePath;
+                    $customer->save();
+                }else{
+                    return redirect()->back()->with('error', 'gagal update data customer');
+                }
+                
+            }else{
+                return redirect()->back()->with('error', 'User tidak ditemukan');
+            }
         }
 
         // Save the changes to the model
