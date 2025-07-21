@@ -28,7 +28,7 @@ class KPesananController extends Controller
             ->when($search, function($query) use ($search) {
                 // Apply the search filter on 'name' or 'company_name'
                 $query->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('company_name', 'like', '%' . $search . '%');
+                    ->orWhere('company_name', 'like', '%' . $search . '%');
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -40,19 +40,22 @@ class KPesananController extends Controller
     public function active(Request $request,$id){
         // dd($request->all());
         $data = PesananM::where('uuid',$id)->first();
-
-        $user= new User();
-        $user->name = $data->name;
-        $user->username = $data->name;
-        $user->email = $data->email;
-        $user->role = 1;
-        $user->active = 1;
-        $user->nominal = $request->nominal;
-        $user->password = Hash::make('Trisurya');
-        $user->save();
-
-
-
+        // dd($data);
+        $user = User::where('email',$data->email)->first();
+        if($user){
+            $user->active = 1;
+            $user->save();
+        }else{
+            $user = new User();
+            $user->name = $data->name;
+            $user->username = $data->name;
+            $user->email = $data->email;
+            $user->role = 1;
+            $user->active = 1;
+            $user->nominal = $request->nominal;
+            $user->password = Hash::make('Trisurya');
+            $user->save();
+        }
         $jadi = new PembelianM();
         $jadi->user_id = $user->id;
         $jadi->nominal = $request->nominal;
@@ -74,7 +77,7 @@ class KPesananController extends Controller
         }else{
             return redirect()->back()->with('error', 'Email tidak terkirim, dan email tidak ditemukan');
         }
-        return redirect()->back()->with('success', 'User Has Been Created');
+        return redirect()->back()->with('success', 'Pesanan Berhasil Dibuat');
     }
     public function actives(Request $request,$id){
         // dd($request->all());
@@ -93,16 +96,18 @@ class KPesananController extends Controller
 
 
 
-        $jadi = new PembelianM();
-        $jadi->user_id = $user->id;
-        $jadi->nominal = $request->nominal;
-        $jadi->product_id = $data->product_id;
-        $jadi->status_pembayaran ='pending';
-        $jadi->save();
+        // $jadi = new PembelianM();
+        // $jadi->user_id = $user->id;
+        // $jadi->nominal = $request->nominal;
+        // $jadi->product_id = $data->product_id;
+        // $jadi->status_pembayaran ='pending';
+        // $jadi->save();
 
-        $product = ProdukM::find($data->product_id);
-        $produk   = $product->name;
-        $harga    = $request->nominal;
+        // $product = ProdukM::find($data->product_id);
+        // $produk   = $product->name;
+        // $harga    = $request->nominal;
+          $produk   = null;
+        $harga    = null;
         $nama     = $data->name;
         $email    = $data->email;
         $email_perusahaan = $data->email_perusahaan;
@@ -118,15 +123,76 @@ class KPesananController extends Controller
         return redirect()->back()->with('success', 'User Has Been Created');
     }
 
+    public function validates(Request $request,$id){
+        // dd($request->all());
+        $data = PesananM::find($id);
+        $datauser = User::where('email',$data->email)->first();
+        // dd($datauser);
+
+        // $user= new User();
+        // $user->name = $data->name;
+        // $user->username = $data->name;
+        // $user->email = $data->email;
+        // $user->role = 1;
+        // $user->active = 1;
+        // $user->nominal = $request->nominal;
+        // $user->password = Hash::make('Trisurya');
+        // $user->save();
+
+
+
+        $jadi = new PembelianM();
+        $jadi->user_id = $datauser->id;
+        $jadi->nominal = $request->nominal;
+        $jadi->product_id = $data->product_id;
+        $jadi->status_pembayaran ='pending';
+        $jadi->save();
+
+        $product = ProdukM::find($data->product_id);
+        $produk   = $product->name;
+        $harga    = $request->nominal;
+
+        $nama     = $data->name;
+        $email    = $data->email;
+        $email_perusahaan = $data->email_perusahaan;
+        $password = NULL; // Bisa digenerate secara acak atau default
+
+        // Kirim email ke klien
+        if($email && $email_perusahaan){
+            Mail::to($email)->send(new AccPemesananMail($produk, $harga, $nama, $email, $password));
+            Mail::to($email_perusahaan)->send(new AccPemesananMail($produk, $harga, $nama, $email_perusahaan, $password));
+        }else{
+            return redirect()->back()->with('error', 'Email tidak terkirim, dan email tidak ditemukan');
+        }
+        return redirect()->back()->with('success', 'User Has Been Created');
+    }
+
     public function message($id){
         $data = PesananM::find($id);
 
         $nomor = $data->whatsapp; // Ganti 0821 menjadi 62821 (62 adalah kode negara Indonesia)
-        
+        $user = User::where('email', $data->email)->first();
+        if($user){
+
+            $message = urlencode("Terimakasih telah menghubungi Kami, Akun Anda telah dibuatkan");
+        }else{
+            $message = urlencode("Terima kasih telah menghubungi kami. Saat ini akun Anda masih dalam proses verifikasi. Mohon konfirmasi kembali, apakah Bapak/Ibu ingin melanjutkan proses pemesanan agar kami bisa segera mengaktifkan akun Anda?");
+        }
         // Pesan WhatsApp
-        $message = urlencode("Terimakasih telah menghubungi Kami, Akun Anda telah dibuatkan");
         
         // URL WhatsApp
+        // Contoh input: 08123456789, +628123456789, 628123456789
+        $nomor = preg_replace('/[^0-9+]/', '', $nomor); // Bersihkan dari spasi/simbol lain
+
+        if (str_starts_with($nomor, '0')) {
+            $nomor = '+62' . substr($nomor, 1);
+        } elseif (str_starts_with($nomor, '62')) {
+            $nomor = '+' . $nomor;
+        } elseif (!str_starts_with($nomor, '+62')) {
+            // fallback jika tidak valid, bisa sesuaikan
+            $nomor = '+62' . $nomor;
+        }
+
         $whatsappLink = "https://wa.me/{$nomor}?text={$message}";
 
         header("Location: $whatsappLink");

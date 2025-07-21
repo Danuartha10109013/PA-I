@@ -40,13 +40,12 @@ class LoginController extends Controller
             }
     
             // Check the user's role
-            if ($user->role == 0) {
+            if ($user->role != 1 ) {
                 return redirect()->route('admin.dashboard')->with('success', 'Hallo Selamat Datang ' . Auth::user()->name);
             } elseif($user->role == 1){
                 return redirect()->route('landing-page')->with('success', 'Hallo Selamat Datang ' . Auth::user()->name);
 
-            }
-             else {
+            } else {
                 Auth::logout(); // Prevent access if the user is not an admin
                 return redirect()->back()->with('error', 'You are not authorized to access this area.');
             }

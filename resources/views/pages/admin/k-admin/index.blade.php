@@ -18,6 +18,7 @@
                         <th>Username</th>
                         <th>Active</th>
                         <th>Email</th>
+                        <th>Signature</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -30,8 +31,16 @@
                         <td>{{ $d->active ? 'Active' : 'Inactive' }}</td>
                         <td>{{ $d->email }}</td>
                         <td>
+                            @if ($d->signature)
+                                <img src="{{ asset('storage/' . $d->signature) }}" alt="Signature" style="width: 100px; height: auto;">
+                                
+                            @endif
+                        </td>
+                        <td>
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $d->id }}">Edit</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $d->id }}">Delete</button>
+                            @if(Auth::user()->id != $d->id) 
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $d->id }}">Delete</button>
+                            @endif
                         </td>
                     </tr>
                     
@@ -44,7 +53,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="{{ route('admin.k-admin.update', $d->id) }}" method="POST">
+                                    <form action="{{ route('admin.k-admin.update', $d->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
                                         <div class="mb-3">
@@ -66,6 +75,10 @@
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
                                             <input type="email" class="form-control" name="email" value="{{ $d->email }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="signature" class="form-label">Signature</label>
+                                            <input type="file" class="form-control" name="signature" value="{{ $d->email }}" accept="image/png">
                                         </div>
                                         <div class="mb-3">
                                             <label for="password" class="form-label">Password</label>
@@ -119,7 +132,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('admin.k-admin.store') }}" method="POST">
+                <form action="{{ route('admin.k-admin.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
@@ -140,6 +153,10 @@
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signature" class="form-label">signature</label>
+                        <input type="file" class="form-control" name="signature" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>

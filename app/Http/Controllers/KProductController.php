@@ -36,6 +36,7 @@ class KProductController extends Controller
 
     public function store(Request $request)
 {
+    // dd($request->all());
     $request->validate([
         'kode_produk' => 'required|string|max:255',
         'name' => 'required|string|max:255',
@@ -45,6 +46,8 @@ class KProductController extends Controller
         'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,svg', // Each image file validation
         'jenis_id' => 'required|integer',
         'kategori_id' => 'required|integer',
+        'harga' => 'required|integer',
+        'harga_jual' => 'required|integer',
         'detail' => 'required',
         'manual_book' => 'required|file|mimes:pdf,doc,docx',
         'brosur' => 'required|file|mimes:pdf,doc,docx',
@@ -90,6 +93,8 @@ class KProductController extends Controller
         'brosur' => $uploadedBrosur,
         'kategori_id' => $request->kategori_id,
         'detail' => $request->detail,
+        'harga' => $request->harga,
+        'harga_jual' => $request->harga_jual,
     ]);
 
         return redirect()->route('admin.product')->with('success', 'Product added successfully');
@@ -113,14 +118,16 @@ class KProductController extends Controller
             'deskripsi' => 'required|string',
             'sfesifikasi' => 'nullable|array',
             'detail' => 'nullable',
+            'harga' => 'nullable|integer',
+            'harga_jual' => 'nullable|integer',
             'gambar' => 'nullable|array',
             'gambar.*' => 'nullable',
             'jenis_id' => 'required|exists:jenis,id',
             'kategori_id' => 'required|exists:kategori,id',
             'delete_gambar' => 'nullable|array',
             'delete_gambar.*' => 'integer',
-            'manual_book' => 'required|file|mimes:pdf,doc,docx',
-            'brosur' => 'required|file|mimes:pdf,doc,docx',
+            'manual_book' => 'nullable|file|mimes:pdf,doc,docx',
+            'brosur' => 'nullable|file|mimes:pdf,doc,docx',
         ]);
 
         // Find the product by ID
@@ -130,11 +137,15 @@ class KProductController extends Controller
             $filename = $request->file('manual_book')->getClientOriginalName();
             $path = $request->file('manual_book')->storeAs("file/products/{$request->kode_produk}", $filename, 'public');
             $uploadedManual = $path;
+        $product->manual_book = $uploadedManual;
+
         }
         if ($request->hasFile('brosur')) {
             $filenames = $request->file('brosur')->getClientOriginalName();
             $paths = $request->file('brosur')->storeAs("file/products/{$request->kode_produk}", $filenames, 'public');
             $uploadedBrosur = $paths;
+        $product->brosur = $uploadedBrosur;
+
         }
         // Update basic product fields
         $product->kode_produk = $request->kode_produk;
@@ -143,9 +154,8 @@ class KProductController extends Controller
         $product->jenis_id = $request->jenis_id;
         $product->kategori_id = $request->kategori_id;
         $product->detail = $request->detail;
-        $product->manual_book = $uploadedManual;
-        $product->brosur = $uploadedBrosur;
-
+        $product->harga = $request->harga;
+        $product->harga_jual = $request->harga_jual;
         if ($request->has('sfesifikasi')) {
             // Filter out any null values
             $sfesifikasi = array_filter($request->sfesifikasi, function($value) {
@@ -300,6 +310,19 @@ class KProductController extends Controller
         return response()->download($filePath);
     }
     
+    // Tambahan: Update harga produk dari chat
+    public function updateHarga(Request $request, $id)
+    {
+        $request->validate([
+            'harga' => 'required|numeric',
+            'harga_jual' => 'required|numeric',
+        ]);
+        $produk = ProdukM::findOrFail($id);
+        $produk->harga = $request->harga;
+        $produk->harga_jual = $request->harga_jual;
+        $produk->save();
+        return back()->with('success', 'Harga produk berhasil diupdate.');
+    }
     
 
 }

@@ -36,13 +36,13 @@ class KPembelianController extends Controller
             'product' => 'required|string', // You can add specific validation for 'product'
             // 'invoice' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
             // 'no_do' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
-            'faktur' => 'nullable|file|mimes:jpeg,png,pdf,docx', 
+            'faktur' => 'nullable|file|mimes:pdf', 
             'logo' => 'nullable|file|mimes:jpeg,png', 
         ]);
 
         if($request->product == 'Selesai'){
             $request->validate([
-                'faktur' => 'required|file|mimes:jpeg,jpg,png,pdf,docx',
+                'faktur' => 'required|file|mimes:pdf',
                 'logo' => 'required|file|mimes:jpeg,png,jpg',
             ]);
         }
@@ -76,7 +76,7 @@ class KPembelianController extends Controller
             // You can update the database with the path of the file
             // $pembeli->logo = $filePath;
             $customer = new CustomerM();
-            $user = User::find($pembeli->id);
+            $user = User::find($pembeli->user_id);
             if($user){
                 $pesanan = PesananM::where('email',$user->email)->first();
                 if($pesanan){
@@ -126,8 +126,14 @@ class KPembelianController extends Controller
     $pembeli = PembelianM::findOrFail($id);
     $product = ProdukM::find($pembeli->product_id);
     $user = User::find($pembeli->user_id);
+    if(!$user){
+        return redirect()->back()->with('error', 'User tidak ditemukan');
+    }
     $pesanan = PesananM::where('email',$user->email)->first();
     // dd($pesanan);
+    if(!$pesanan){
+        return redirect()->back()->with('error', 'Pesanan tidak ditemukan');
+    }
     $now = Carbon::now();
     $day = str_pad($now->day, 2, '0', STR_PAD_LEFT);
     $month = str_pad($now->month, 2, '0', STR_PAD_LEFT);
@@ -249,6 +255,9 @@ public function saveinvoice(Request $request)
     // Jika ada file baru diupload, ganti path-nya
     if ($signaturePath) {
         $invoice->best_regards_signature = $signaturePath;
+    }else{
+        // Jika tidak ada file baru, tetap gunakan path lama
+        $invoice->best_regards_signature = $request->best_regards_signatures;
     }
 
     $invoice->save();
@@ -263,6 +272,7 @@ public function saveinvoice(Request $request)
 
     public function savedo(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'nomor_do' => 'required',
             'no_ref' => 'required',
@@ -317,6 +327,9 @@ public function saveinvoice(Request $request)
                 Storage::disk('public')->delete($deliveryOrder->best_regards_signature);
             }
             $deliveryOrder->best_regards_signature = $request->file('best_regards_signature')->store('signatures/best_regards', 'public');
+        }else {
+            // Jika tidak ada file yang diupload, tetap simpan path lama
+            $deliveryOrder->best_regards_signature = $request->best_regards_signatures;
         }
 
         $deliveryOrder->save();

@@ -48,10 +48,21 @@
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$loop->iteration}}</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$d->created_at}}</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;
-                                @php
-                                    $product = \App\Models\ProdukM::where('id',$d->product_id)->value('name');
+                                @php 
+                                    $product = \App\Models\ProdukM::where('id', $d->product_id)->value('name');
+                                
+                                    $count = \App\Models\User::where('email', $d->email)->first();
+                                    $pembelian = [];
+                                    if (!is_null($count)):
+                                        $pembelian = \App\Models\PembelianM::where('product_id', $d->product_id)->where('user_id', $count['id'])->first();
+                                    endif
                                 @endphp
-                                {{$product}}</td>
+                                @if(!empty($product))
+                                    {{$product}}
+                                @else
+                                    <span class="text-warning">Belum ada Pesanan</span>
+                                @endif
+                            </td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$d->name}}</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$d->email}}</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$d->whatsapp}} <a href="{{route('admin.pemesanan.message',$d->id)}}" class="btn btn-success"><i class="fab fa-whatsapp"></i>                                Message</a></td>
@@ -60,53 +71,107 @@
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;{{$d->email_perusahaan}}</td>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;Pesanan Ke-{{$d->total_order}}</td>
                             <td>
-                                @php
-                                    $count = \App\Models\User::where('email',$d->email)->count();
-                                @endphp
-                                @if ($count >= 1)
-                                    Account Has Been Created
-                                @else
-                                    <a 
-                                    href="javascript:void(0);" 
-                                    class="btn btn-primary" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#konfirmasiModal" 
-                                    data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">
-                                    Activate An Account
-                                    </a>
+                                <div class="">
+                                @if (!is_null($count))
+                                    Account Has Been Created <br>
+                                    @if (!empty($product) && is_null($pembelian))
+                                    <a href="javascript:void(0);" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#konfirmasiModal2" data-url="{{ route('admin.pemesanan.validates', $d->id) }}">Setujui Pesanan</a>
 
-                                    <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                        <form method="POST" id="konfirmasiForm">
-                                            @csrf
-                                            <div class="modal-header">
-                                            <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                            </div>
+                                    <div class="modal fade" id="konfirmasiModal2" tabindex="-1" aria-labelledby="konfirmasiModal2Label" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            <form method="POST" id="konfirmasiForm2">
+                                                @csrf
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="konfirmasiModalLabel">Validasi Pesanan</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
 
-                                            <div class="modal-body">
-                                            <p>Apakah Anda yakin ingin menyetujui pemesanan ini <br> sebagai pembeli?</p>
-                                            <div class="mb-3">
-                                                <label for="harga_display" class="form-label">Harga</label>
-                                                <input 
-                                                type="text" 
-                                                id="harga_display" 
-                                                class="form-control" 
-                                                required 
-                                                style="outline: 2px solid #0d6efd;" 
-                                                oninput="formatRupiah(this)">
-                                                <input type="hidden" name="nominal" id="harga_asli">
-                                            </div>
-                                            </div>
+                                                <div class="modal-body">
+                                                <p>Apakah Anda yakin ingin menyetujui pesanan ini?</p>
+                                                <div class="mb-3">
+                                                    <label for="harga_display" class="form-label">Harga</label>
+                                                    <input 
+                                                    type="text" 
+                                                    id="harga_display" 
+                                                    class="form-control" 
+                                                    required
+                                                    style="outline: 2px solid #0d6efd;" 
+                                                    oninput="formatRupiah(this)" value="0">
+                                                    <input type="hidden" name="nominal" id="harga_asli">
+                                                </div>
+                                                </div>
 
-                                            <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Setujui</button>
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Setujui</button>
+                                                </div>
+                                            </form>
                                             </div>
-                                        </form>
                                         </div>
                                     </div>
+                                    <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        const konfirmasiModal = document.getElementById('konfirmasiModal2');
+                                        const konfirmasiForm = document.getElementById('konfirmasiForm2');
+
+                                        konfirmasiModal.addEventListener('show.bs.modal', event => {
+                                            const button = event.relatedTarget;
+                                            const url = button.getAttribute('data-url');
+
+                                            konfirmasiForm.action = url;
+
+                                            // Reset input saat modal dibuka
+                                            document.getElementById('harga_display').value = '';
+                                            document.getElementById('harga_asli').value = '';
+                                        });
+
+                                        // Format ke Rupiah saat input diketik
+                                        window.formatRupiah = function(el) {
+                                            let value = el.value.replace(/[^\d]/g, '');
+                                            let formatted = new Intl.NumberFormat('id-ID').format(value);
+                                            el.value = 'Rp ' + formatted;
+                                            document.getElementById('harga_asli').value = value;
+                                        };
+                                    });
+                                    </script>
+
+                                    @endif
+                                @else
+                                    <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#konfirmasiModal" data-url="{{ route('admin.pemesanan.active.barus', $d->id) }}">Activate An Account</a>
+
+                                    <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                            <form method="POST" id="konfirmasiForm">
+                                                @csrf
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="konfirmasiModalLabel">Aktivasi akun baru</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                <p>Apakah Anda yakin ingin menyetujui sebagai pembeli?</p>
+                                                <div class="mb-3">
+                                                    <!-- <label for="harga_display" class="form-label">Harga</label> -->
+                                                    <input 
+                                                    type="hidden" 
+                                                    id="harga_display" 
+                                                    class="form-control" 
+                                                
+                                                    style="outline: 2px solid #0d6efd;" 
+                                                    oninput="formatRupiah(this)" value="0">
+                                                    <input type="hidden" name="nominal" id="harga_asli">
+                                                </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Setujui</button>
+                                                </div>
+                                            </form>
+                                            </div>
+                                        </div>
                                     </div>
                                     <script>
                                     document.addEventListener('DOMContentLoaded', () => {
@@ -178,7 +243,7 @@
                                 </script>
                                 
 
-
+                                </div>
                                 <!-- Confirmation Modal -->
                                 
 

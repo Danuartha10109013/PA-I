@@ -4,6 +4,24 @@
 
 @section('content')
 <div class="card">
+    @if ($errors->any())
+<script>
+    let errorMessages = `
+        <ul style="text-align: left;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    `;
+
+    Swal.fire({
+        icon: 'error',
+        title: 'Validasi Gagal',
+        html: errorMessages,
+        confirmButtonColor: '#d33',
+    });
+</script>
+@endif
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
             <h4>Kelola Pembelian</h4>

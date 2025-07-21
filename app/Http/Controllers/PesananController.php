@@ -17,7 +17,10 @@ class PesananController extends Controller
     public function index(){
         $ids = PembelianM::where('user_id',Auth::user()->id)->value('id');
         $data = PembelianM::find($ids);
-        $user = User::find($data->user_id);
+        $user = [];
+        $snapToken = [];
+        if($data) {
+            $user = User::find($data->user_id);
         // dd($data);
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         Config::$clientKey = env('MIDTRANS_CLIENT_KEY');
@@ -37,7 +40,7 @@ class PesananController extends Controller
         ];
 
         $snapToken = Snap::getSnapToken($params);
-            
+            }
         return view('pages.pesanan.index',compact('data','snapToken'));
     }
 
@@ -60,6 +63,7 @@ class PesananController extends Controller
     }
      public function dodownload($id)
     {
+        // ini_set('memory_limit', '1024M');
         $data = DeliveryOrderM::find($id);
 
         $pdf = Pdf::loadView('pages.admin.k-pembelian.preview-do-pdf-dw', compact('data'));

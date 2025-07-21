@@ -8,9 +8,11 @@ PT. Trisurya Solusindo Utama || Pesan Product
     
         <form action="{{route('product.whatsapp.send')}}" method="POST">
             @csrf
+            <input type="hidden" name="pesanan_id" class="form-control" id="pesanan_id" value="{{ $orders->id }}" >
             <div class="row mt-5">
                 <div class="col-md-4">
                     <h5 class="text-center">Product Detail</h5>
+                    {{-- {{$orders->id ?? 'N/A'}} --}}
                     <div class="card h-100 shadow-sm border-0">
                         <!-- Product image carousel -->
                         @if($data->gambar)
@@ -51,9 +53,9 @@ PT. Trisurya Solusindo Utama || Pesan Product
                 <div class="col-md-4">
                     <div class="form-control mb-3">
                         <label for="nama"><i class="fas fa-user"></i> Nama <small style="color: red">*</small></label>
-                        <input type="text" name="nama" class="form-control" id="nama" placeholder="Masukkan Nama" >
+                        <input type="text" name="nama" class="form-control" id="nama" value="{{$orders->name}}" placeholder="Masukkan Nama" >
                         <input type="hidden" name="uuid" id="uuid" class="form-control" readonly>
-
+                        
                         <script>
                              document.addEventListener("DOMContentLoaded", function () {
                                 const uuidInput = document.getElementById("uuid");
@@ -66,12 +68,12 @@ PT. Trisurya Solusindo Utama || Pesan Product
                     
                     <div class="form-control mb-3">
                         <label for="email"><i class="fas fa-envelope"></i> Email <small style="color: red">*</small></label>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" >
+                        <input type="email" name="email" class="form-control" id="email" value="{{$orders->email}}" placeholder="Masukkan Email" >
                     </div>
                     
                     <div class="form-control mb-3">
                         <label for="no_whatsapp"><i class="fab fa-whatsapp"></i> No WhatsApp <small style="color: red">*</small></label>
-                        <input type="text" name="no_whatsapp" class="form-control" id="no_whatsapp" placeholder="Masukkan No WhatsApp" required>
+                        <input type="text" name="no_whatsapp" class="form-control" id="no_whatsapp" value="{{$orders->whatsapp}}" placeholder="Masukkan No WhatsApp" required>
                     </div>
                 </div>
                 
@@ -79,17 +81,17 @@ PT. Trisurya Solusindo Utama || Pesan Product
                 <div class="col-md-4">
                     <div class="form-control mb-3">
                         <label for="perusahaan"><i class="fas fa-building"></i> Perusahaan <small style="color: red">*</small></label>
-                        <input type="text" name="perusahaan" class="form-control" id="perusahaan" placeholder="Masukkan Nama Perusahaan" required>
+                        <input type="text" name="perusahaan" class="form-control" id="perusahaan" value="{{$orders->company_name}}" placeholder="Masukkan Nama Perusahaan" required>
                     </div>
                     
                     <div class="form-control mb-3">
                         <label for="alamat"><i class="fas fa-map-marker-alt"></i> Alamat <small style="color: red">*</small></label>
-                        <input type="text" name="alamat" class="form-control" id="alamat" placeholder="Masukkan Alamat Perusahaan" >
+                        <input type="text" name="alamat" class="form-control" id="alamat" value="{{$orders->alamat_perusahaan}}" placeholder="Masukkan Alamat Perusahaan" >
                     </div>
                     
                     <div class="form-control mb-3">
                         <label for="email_perusahaan"><i class="fas fa-building"></i> Email Perusahaan <small style="color: red">*</small></label>
-                        <input type="email" name="email_perusahaan" class="form-control" id="email_perusahaan" placeholder="Masukkan Email Perusahaan" >
+                        <input type="email" name="email_perusahaan" class="form-control" id="email_perusahaan" value="{{$orders->email_perusahaan}}" placeholder="Masukkan Email Perusahaan" >
                     </div>
                 </div>
                 <div class="col-md-6"></div>
@@ -97,7 +99,7 @@ PT. Trisurya Solusindo Utama || Pesan Product
                     <button style="width: 50%;font-size: 18px;font-weight: bold" type="submit" class="btn btn-success"><i class="fa fa-comment"></i> Submit</button>
                 </div>
                 
-                <input type="hidden" name="prodct_id" value="{{$data->id}}">
+                <input type="hidden" name="product_id" value="{{$data->id}}">
                 
             </div>
         </form>

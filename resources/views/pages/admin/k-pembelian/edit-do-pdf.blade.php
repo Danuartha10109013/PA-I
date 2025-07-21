@@ -275,7 +275,9 @@
           Best Regards,<br><br>
           <img id="best_preview" src="{{ $data->best_regards_signature ? asset('storage/'.$data->best_regards_signature) : '' }}"
                style="max-height: 80px; margin-bottom: -40px; display: {{ $data->best_regards_signature ? 'block' : 'none' }}">
-          <div class="signature-line"></div>
+          <input type="hidden" name="best_regards_signatures" value="{{Auth::user()->signature}}"><br>
+          
+               <div class="signature-line"></div>
           <input type="file" name="best_regards_signature" accept="image/*" onchange="previewSignature(this, 'best_preview')">
           <input type="text" name="best_regards" value="{{ $data->best_regards }}">
         </div>

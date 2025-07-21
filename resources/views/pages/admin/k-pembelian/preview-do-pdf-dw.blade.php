@@ -275,7 +275,9 @@
   <tr>
     <td style="width: 50%; text-align: center;">
       Customer,<br><br>
+      @if (!empty($data->customer_signature) && file_exists(public_path('storage/'.$data->customer_signature)) && is_file(public_path('storage/'.$data->customer_signature)))
       <img src="{{ public_path('storage/'.$data->customer_signature) }}" style="max-height: 80px; margin-bottom: -20px;">
+      @endif
       <div style="border-top: 1px solid #000; width: 70%; margin: 60px auto 0;"></div>
       {{ $data->customer_name }}
     </td>

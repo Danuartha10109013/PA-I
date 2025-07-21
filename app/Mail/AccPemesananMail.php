@@ -21,7 +21,7 @@ class AccPemesananMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($produk, $harga, $nama, $email, $password)
+    public function __construct($produk = null, $harga = null, $nama, $email, $password)
     {
         $this->produk = $produk;
         $this->harga = $harga;
@@ -33,7 +33,7 @@ class AccPemesananMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Konfirmasi Pemesanan dan Akun Login'
+            subject: 'Konfirmasi'
         );
     }
 

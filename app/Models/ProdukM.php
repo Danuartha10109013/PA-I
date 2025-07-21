@@ -17,6 +17,7 @@ class ProdukM extends Model
         'deskripsi',
         'gambar',
         'harga',
+        'harga_jual',
         'sfesifikasi',
         'jenis_id',
         'kategori_id',

@@ -18,6 +18,7 @@ class TestimoniM extends Model
         'company_logo',
         'product_name',
         'testimonial',
+        'produk_id',
         'rating',
     ];
 }

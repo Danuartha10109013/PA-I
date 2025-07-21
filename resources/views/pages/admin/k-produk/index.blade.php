@@ -213,6 +213,8 @@
                         <th>Kategori</th>
                         <th>Jenis</th>
                         <th>Gambar</th>
+                        <th>Harga</th>
+                        <th>Harga Jual</th>
                         <th>Spesifikasi</th>
                         <th>Manual Book</th>
                         <th>Brosur</th>
@@ -255,6 +257,12 @@
                                     </button>
                                 </div>
                             @endif
+                        </td>
+                        <td>
+                            {{$d->harga ? 'Rp. ' . number_format($d->harga, 0, ',', '.') : 'N/A'}}
+                        </td>
+                        <td>
+                            {{$d->harga_jual ? 'Rp. ' . number_format($d->harga_jual, 0, ',', '.') : 'N/A'}}
                         </td>
                         <td class="align-middle">
                             <!-- List for Specifications -->
@@ -361,7 +369,42 @@
                                 <label for="deskripsi" class="form-label">Description</label>
                                 <textarea class="form-control" id="deskripsi" style="outline: 2px solid grey;" name="deskripsi" rows="3" required></textarea>
                             </div>
-                            
+                            <div class="mb-3">
+                                <label for="harga" class="form-label">Harga</label>
+                                <input type="text" class="form-control" id="harga_display" style="outline: 2px solid grey;" required>
+                                <input type="hidden" name="harga" id="harga">
+                            </div>
+                            <script>
+                                const hargaDisplay = document.getElementById('harga_display');
+                                const hargaHidden = document.getElementById('harga');
+                                hargaDisplay.addEventListener('input', function(e) {
+                                    let value = this.value.replace(/[^0-9]/g, '');
+                                    if (value) {
+                                        this.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
+                                    } else {
+                                        this.value = '';
+                                    }
+                                    hargaHidden.value = value;
+                                });
+                            </script>
+                            <div class="mb-3">
+                                <label for="harga_jual" class="form-label">Harga Jual</label>
+                                <input type="text" class="form-control" id="harga_jual_display" style="outline: 2px solid grey;" required>
+                                <input type="hidden" name="harga_jual" id="harga_jual">
+                            </div>
+                            <script>
+                                const hargaJualDisplay = document.getElementById('harga_jual_display');
+                                const hargaJualHidden = document.getElementById('harga_jual');
+                                hargaJualDisplay.addEventListener('input', function(e) {
+                                    let value = this.value.replace(/[^0-9]/g, '');
+                                    if (value) {
+                                        this.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
+                                    } else {
+                                        this.value = '';
+                                    }
+                                    hargaJualHidden.value = value;
+                                });
+                            </script>
                             <!-- Dynamic Specifications -->
                             <div class="mb-3">
                                 <label class="form-label">Specifications</label>

@@ -88,7 +88,7 @@ Route::get('/customer', [LandingController::class, 'customer'])->name('customer'
 
 //Testimoni
 Route::get('/testimoni', [LandingController::class, 'testimoni'])->name('testimoni');
-
+Route::get('/get-testimoni/{productId}', [LandingController::class, 'getTestimoni']);
 //Kontak
 Route::get('/kontak', [LandingController::class, 'kontak'])->name('kontak');
 
@@ -153,6 +153,7 @@ Route::middleware([AutoLogout::class])->group(function () {
             Route::post('/active/{id}',[KPesananController::class, 'active'])->name('pemesanan.active');
             Route::post('/active-baru/{id}',[KPesananController::class, 'active'])->name('pemesanan.active.baru');
             Route::post('/active-barus/{id}',[KPesananController::class, 'actives'])->name('pemesanan.active.barus');
+            Route::post('/validates/{id}',[KPesananController::class, 'validates'])->name('pemesanan.validates');
             Route::get('/message/{id}',[KPesananController::class, 'message'])->name('pemesanan.message');
             Route::get('/export',[KPesananController::class, 'export'])->name('pemesanan.export');
             Route::delete('/delete/{id}',[KPesananController::class, 'delete'])->name('pemesanan.delete');
@@ -236,3 +237,6 @@ Route::middleware([AutoLogout::class])->group(function () {
     });
 
 });
+
+// Route untuk update harga produk dari chat admin
+Route::put('/admin/produk/{id}/update-harga', [App\Http\Controllers\KProductController::class, 'updateHarga'])->name('admin.produk.updateHarga');

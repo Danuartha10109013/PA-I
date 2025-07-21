@@ -276,12 +276,16 @@
       <div class="signatures">
         <div class="signature-block">
           Customer,<br><br>
+          @if ($data->customer_signature)
+            
           <img  src="{{asset('storage/'.$data->customer_signature)}}" style="max-height: 80px;margin-bottom: -40px">
+          @endif
           <div class="signature-line"></div>
           {{$data->customer_name}}
         </div>
         <div class="signature-block">
           Best Regards,<br><br>
+          {{-- <img src="{{ asset('storage/' . Auth::user()->signature) }}" alt="Signature" id="bestregards_preview" style="max-height: 80px; display: block; margin: 10px auto;"> --}}
           <img  src="{{asset('storage/'.$data->best_regards_signature)}}" style="max-height: 80px;margin-bottom: -40px">
           <div class="signature-line"></div>
           {{$data->best_regards}}

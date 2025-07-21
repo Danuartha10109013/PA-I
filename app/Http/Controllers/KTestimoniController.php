@@ -28,6 +28,7 @@ class KTestimoniController extends Controller
         $request->validate([
             'person_name' => 'required|string|max:255',
             'company_name' => 'required|string|max:255',
+            'produk_id' => 'required|string|max:255',
             'product_name' => 'required|string|max:255',
             'testimonial' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
@@ -51,6 +52,7 @@ class KTestimoniController extends Controller
             'company_name' => $request->company_name,
             'product_name' => $request->product_name,
             'testimonial' => $request->testimonial,
+            'produk_id' => $request->produk_id,
             'rating' => $request->rating,
             'person_picture' => $personPictureName,  // Save the filename
             'company_logo' => $companyLogoName,  // Save the filename

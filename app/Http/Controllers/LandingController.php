@@ -40,10 +40,18 @@ class LandingController extends Controller
                 })
                 ->get();
         }
+        $produkIds = $data->pluck('id')->toArray();
+        $testimoni = [];
+        if(!empty($produkIds)){
+            $testimonials = TestimoniM::whereIn('produk_id', $produkIds)->get();
+            foreach ($testimonials as $key => $value) {
+                $testimoni[$value['produk_id']][] = $value;
+            }
+        }
 
         $category = KategoriM::all();
 
-        return view('pages.product.index', compact('data', 'category', 'search'));
+        return view('pages.product.index', compact('data', 'category', 'search','testimoni'));
     }
 
     public function customer(Request $request)
@@ -74,5 +82,17 @@ class LandingController extends Controller
         return view('pages.project.index',compact('data'));
     }
 
+    public function getTestimoni($productId)
+    {
+        $testimonis = [];
+        if($productId){
+
+            $testimonis = TestimoniM::where('produk_id', $productId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
+        
+        return response()->json($testimonis);
+    }
 
 }

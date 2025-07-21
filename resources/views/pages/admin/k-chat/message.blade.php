@@ -59,10 +59,13 @@
     }
 </style>
 <!-- Tombol Trigger Modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#konfirmasiModal" title="Setujui Sebagai Pembeli">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#konfirmasiModal" title="Setujui Pesanan">
     <i class="fa fa-user-plus"></i>
 </button>
-
+@php
+            $pesanan = \App\Models\PesananM::where('uuid',$user_token)->first();
+            $product = \App\Models\ProdukM::find($pesanan->product_id);
+        @endphp
 <!-- Modal Konfirmasi -->
 <div class="modal fade" id="konfirmasiModal" tabindex="-1" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -70,7 +73,7 @@
       @csrf
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pembeli Baru</h5>
+          <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Pesanan</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
 
@@ -93,7 +96,7 @@
               <strong>User telah disetujui sebagai pembeli.</strong>
             </div>
           @else
-            <p>Apakah Anda yakin ingin menyetujui pemesanan ini sebagai pembeli?</p>
+            <p>Apakah Anda yakin ingin menyetujui pesanan ini?</p>
 
             <div class="mb-3">
               <label for="harga_display" class="form-label">Harga</label>
@@ -103,7 +106,8 @@
                 class="form-control" 
                 style="outline: 2px solid #0d6efd;" 
                 required 
-                oninput="formatRupiah(this)">
+                oninput="formatRupiah(this)"
+                value="{{ isset($product->harga_jual) ? 'Rp ' . number_format($product->harga_jual, 0, ',', '.') : '' }}">
               <input type="hidden" name="nominal" id="harga_asli">
             </div>
           @endif
@@ -112,7 +116,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           @if (!$pembelian)
-            <button type="submit" class="btn btn-primary">Setujui</button>
+            <button type="submit" class="btn btn-primary">Setujui Pesanan</button>
           @endif
         </div>
       </div>
@@ -143,14 +147,26 @@ function formatRupiah(input) {
 }
 </script>
 
+@php use Illuminate\Support\Str; @endphp
 
 <div class="card">
     <div class="card-header">
-        @php
-            $pesanan = \App\Models\PesananM::where('uuid',$user_token)->first();
-            $product = \App\Models\ProdukM::find($pesanan->product_id);
-        @endphp
-        <h3 class="card-title">Chat dengan User: <code>{{ $pesanan->name }}</code></h3> Product : {{$product->name}}
+        
+        <h3 class="card-title">Chat dengan User: <code>{{ $pesanan->name  ?? 'N/A'}}</code></h3> Product : {{$product->name ?? 'N/A'}}
+        @if ($product)
+            <form id="form-edit-harga" method="POST" action="{{ route('admin.produk.updateHarga', $product->id) }}">
+                @csrf
+                @method('PUT')
+                <div class="d-flex align-items-center gap-2 mt-2 mb-2">
+                    <label class="mb-0">Harga Dasar:</label>
+                    <input type="text" name="harga" id="harga" value="{{ 'Rp ' . number_format($product->harga, 0, ',', '.') }}" class="form-control form-control-sm" style="width:120px;" readonly>
+                    <label class="mb-0">Harga Jual:</label>
+                    <input type="text" name="harga_jual" id="harga_jual" value="{{ 'Rp ' . number_format($product->harga_jual, 0, ',', '.') }}" class="form-control form-control-sm" style="width:120px;" readonly>
+                    <button type="button" class="btn btn-warning btn-sm" id="btn-edit-harga">Edit</button>
+                    <button type="button" class="btn btn-success btn-sm d-none" id="btn-simpan-harga" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiHarga">Simpan</button>
+                </div>
+            </form>
+        @endif
     </div>
 
     <div id="chat-container" class="chat-container">
@@ -179,7 +195,29 @@ function formatRupiah(input) {
 
                     {{-- Message Text --}}
                     @if ($msg->message)
-                        <div>{{ $msg->message }}</div>
+                        @php
+                            // Cek apakah message adalah JSON array (misal: ["images/products/01/gambar PH.png",2000000])
+                            $isJsonArray = false;
+                            $decoded = null;
+                            if (is_string($msg->message) && Str::startsWith($msg->message, '[')) {
+                                $decoded = json_decode($msg->message, true);
+                                $isJsonArray = is_array($decoded);
+                            }
+                        @endphp
+
+                        @if ($isJsonArray && count($decoded) > 0)
+                            {{-- Jika pesan adalah array JSON --}}
+                            @foreach ($decoded as $item)
+                                @if (is_string($item) && (Str::endsWith($item, '.png') || Str::endsWith($item, '.jpg') || Str::endsWith($item, '.jpeg') || Str::endsWith($item, '.webp')))
+                                    <img src="{{ asset('storage/'.$item) }}" alt="{{$item}}" class="chat-img mb-2">
+                                @elseif (is_numeric($item))
+                                    <div class="fw-bold text-success mb-2">Rp {{ number_format($item, 0, ',', '.') }}</div>
+                                @endif
+                            @endforeach
+                        @else
+                            {{-- Jika pesan adalah HTML biasa --}}
+                            <div>{!! $msg->message !!}</div>
+                        @endif
                     @endif
 
                     <div class="chat-time text-end">{{ $msg->created_at->format('H:i') }}</div>
@@ -211,6 +249,25 @@ function formatRupiah(input) {
             <div id="file-preview"></div>
         </form>
     </div>
+</div>
+
+<!-- Modal Konfirmasi -->
+<div class="modal fade" id="modalKonfirmasiHarga" tabindex="-1" aria-labelledby="modalKonfirmasiHargaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalKonfirmasiHargaLabel">Konfirmasi Perubahan Harga</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        Apakah Anda yakin ingin mengubah harga produk ini?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="btn-konfirmasi-simpan-harga">Ya, Simpan</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -271,5 +328,59 @@ function formatRupiah(input) {
         const chatContainer = document.getElementById('chat-container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
     });
+
+    // Format input ke rupiah saat edit, dan pastikan value yang dikirim ke backend tetap angka
+    function formatRupiahInput(input) {
+        let angka = input.value.replace(/[^\d]/g, '');
+        if (!angka) angka = '0';
+        let number = parseInt(angka, 10);
+        input.value = 'Rp ' + number.toLocaleString('id-ID');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var btnEdit = document.getElementById('btn-edit-harga');
+        var btnSimpan = document.getElementById('btn-simpan-harga');
+        var harga = document.getElementById('harga');
+        var hargaJual = document.getElementById('harga_jual');
+        var btnKonfirmasi = document.getElementById('btn-konfirmasi-simpan-harga');
+        var formEdit = document.getElementById('form-edit-harga');
+
+        if(btnEdit && btnSimpan && harga && hargaJual && btnKonfirmasi && formEdit) {
+            btnEdit.onclick = function() {
+                harga.removeAttribute('readonly');
+                hargaJual.removeAttribute('readonly');
+                btnEdit.classList.add('d-none');
+                btnSimpan.classList.remove('d-none');
+            };
+            harga.addEventListener('input', function() { formatRupiahInput(harga); });
+            hargaJual.addEventListener('input', function() { formatRupiahInput(hargaJual); });
+            btnKonfirmasi.onclick = function() {
+                // Sebelum submit, ubah value ke angka saja
+                harga.value = harga.value.replace(/[^\d]/g, '');
+                hargaJual.value = hargaJual.value.replace(/[^\d]/g, '');
+                formEdit.submit();
+            };
+        }
+    });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('konfirmasiModal');
+    const hargaDisplay = document.getElementById('harga_display');
+    const hargaAsli = document.getElementById('harga_asli');
+
+    if (modal && hargaDisplay && hargaAsli) {
+        modal.addEventListener('show.bs.modal', function () {
+            // Ambil angka dari value harga_display (misal: 'Rp 1.000.000')
+            let value = hargaDisplay.value.replace(/[^\d]/g, '');
+            hargaAsli.value = value;
+        });
+
+        // Saat input diubah, update juga hidden
+        hargaDisplay.addEventListener('input', function() {
+            let value = hargaDisplay.value.replace(/[^\d]/g, '');
+            hargaAsli.value = value;
+        });
+    }
+});
 </script>
 @endsection

@@ -304,9 +304,11 @@
           <div class="date">Cikarang , <input type="date" name="date_kirim"></div>
           Best Regards,<br><br>
           <div class="signature-line"></div>
-          <input type="file" name="best_regards_signature" accept="image/*" onchange="previewSignature(this, 'bestregards_preview')"><br>
+          <img src="{{ asset('storage/' . Auth::user()->signature) }}" alt="Signature" id="bestregards_preview" style="max-height: 80px; display: block; margin: 10px auto;">
+          <input type="hidden" name="best_regards_signatures" value="{{Auth::user()->signature}}"><br>
+          {{-- <input type="file" name="best_regards_signature" accept="image/*" onchange="previewSignature(this, 'bestregards_preview')"><br> --}}
           <img id="bestregards_preview" src="" style="max-height: 80px; display: none; margin: 10px auto;">
-          <input type="text" name="best_regards" placeholder="Your Name">
+          <input type="text" name="best_regards" value="{{Auth::user()->name}}" placeholder="Your Name">
         </div>
 
       </div>

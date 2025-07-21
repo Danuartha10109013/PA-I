@@ -310,6 +310,8 @@
       @else
         <img id="bestregards_preview" src="" style="max-height: 80px; display:none; margin: 10px auto;">
       @endif
+          <input type="hidden" name="best_regards_signatures" value="{{Auth::user()->signature}}"><br>
+
       <input type="text" name="best_regards" value="{{ $data->best_regards }}" placeholder="Your Name">
     </div>
   </div>

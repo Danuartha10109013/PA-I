@@ -31,6 +31,7 @@
                         <td>
                             @for ($i = 0; $i < 5; $i++)
                                 <i class="fas {{ $i < $testimoni->rating ? 'fa-star text-warning' : 'fa-star text-secondary' }}"></i>
+                                <!-- <i class="bi bi-star-{{ $i < $testimoni->rating ? 'fill' : '' }} fs-4 text-warning" style="--star-index: 0;" aria-hidden="true"></i> -->
                             @endfor
                         </td>
                         <td>

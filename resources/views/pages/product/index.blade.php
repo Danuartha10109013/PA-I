@@ -3,6 +3,23 @@
 PT. Trisurya Solusindo Utama || Product
 @endsection
 @section('content')
+<style>
+.testimoni-item {
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+.testimoni-item:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+.stars {
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.stars:hover {
+    background: #6c757d !important;
+}
+</style>
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
     <ol class="carousel-indicators">
         <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
@@ -71,10 +88,11 @@ PT. Trisurya Solusindo Utama || Product
     <section class="py-5">
 
         <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <div class="row  justify-content-center">
                 @foreach ($data as $d)
-                    <div class="col mb-5">
-                        <div class="card h-100 shadow-sm border-0">
+                
+                    <div class="col-4 mb-5">
+                        <div class="card h-100 shadow-sm border-1">
                             <!-- Product image carousel -->
                             @if($d->gambar)
                                 @php
@@ -100,6 +118,28 @@ PT. Trisurya Solusindo Utama || Product
                             @endif
                             <!-- Product details -->
                             <div class="card-body text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <a class="d-flex align-items-center justify-content-center mb-2 stars  rounded p-1 ps-3 pe-3" style="width: fit-content;background: #495057;cursor:pointer" onclick="showTestimoniModal('{{ $d->id }}')" data-bs-toggle="modal"  data-bs-target="#testimoniModal">
+                                        
+                                    <i class="bi bi-eye text-white"></i> &nbsp; 
+                                    
+                                    @if(!empty($testimoni[$d->id]))
+                                            @php
+                                                $ratings = array_column($testimoni[$d->id], 'rating');
+
+                                                $average = count($ratings) > 0 ? array_sum($ratings) / count($ratings) : 0;
+                                            @endphp
+                                            
+                                            @for ($i = 0; $i < 5; $i++)
+                                                <i class="bi bi-star{{ $i < $average ? '-fill' : '' }} fs-4 text-warning" style="--star-index: 0;" aria-hidden="true"></i>
+                                            @endfor
+                                        @else
+                                            @for ($i = 0; $i < 5; $i++)
+                                                <i class="bi bi-star fs-4 text-warning" style="--star-index: 0;" aria-hidden="true"></i>
+                                            @endfor
+                                        @endif
+                                    </a>
+                                </div>
                                 <h5 class="card-title fw-bold mb-2">{{ $d->name }}</h5>
                                 <p class="card-text">{{ \Illuminate\Support\Str::limit($d->deskripsi, 20, '...') }}</p>
                             </div>
@@ -229,5 +269,129 @@ PT. Trisurya Solusindo Utama || Product
     
     
 </div>
+
+<!-- Modal Testimoni -->
+<div class="modal fade" id="testimoniModal" tabindex="-1" aria-labelledby="testimoniModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testimoniModalLabel">Detail Testimoni</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="testimoniModalBody">
+                <!-- Konten akan diisi via JavaScript -->
+                Loading...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTestimoniModal(productId) {
+    const modalBody = document.getElementById('testimoniModalBody');
+    modalBody.innerHTML = `
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+    
+    fetch(`/get-testimoni/${productId}`)
+        .then(response => response.json())
+        .then(testimonials => {
+            let html = '';
+            
+            if(testimonials.length > 0) {
+                // Calculate average rating
+                const validRatings = testimonials.map(t => {
+                    // Pastikan rating sebagai number
+                    const rating = Number(t.rating);
+                    // Return null jika invalid
+                    return (rating >= 1 && rating <= 5) ? rating : null;
+                }).filter(r => r !== null);
+
+                const sum = validRatings.reduce((a, b) => a + b, 0);
+                const average = validRatings.length > 0 ? sum / validRatings.length : 0;
+                
+                // Display average rating section
+                html += `
+                <div class="text-center mb-4 p-3 bg-light rounded">
+                    <h4>Rating Rata-rata</h4>
+                    <div class="d-flex justify-content-center mb-2">
+                        ${Array(5).fill().map((_, i) => 
+                            `<i class="bi bi-star${i < average ? '-fill' : ''} fs-2 text-warning mx-1"></i>`
+                        ).join('')}
+                    </div>
+                    <h5 class="mb-0">${average.toFixed(1)} dari 5 (${testimonials.length} ulasan)</h5>
+                </div>
+                <hr>
+                `;
+                
+                // Display each testimonial
+                testimonials.forEach(testimonial => {
+                    const starIcons = Array(5).fill().map((_, i) => 
+                        `<i class="bi bi-star${i < testimonial.rating ? '-fill' : ''} text-warning"></i>`
+                    ).join('');
+                    
+                    const personPicture = testimonial.person_picture ? 
+                        `<img src="{{ asset('storage/testimoni/') }}/${testimonial.person_picture}" 
+                              alt="${testimonial.person_name}" 
+                              class="rounded-circle me-3" 
+                              style="width: 60px; height: 60px; object-fit: cover;">` :
+                        `<div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3" 
+                              style="width: 60px; height: 60px;">
+                            <i class="bi bi-person-fill text-white fs-4"></i>
+                        </div>`;
+                    
+                    const companyLogo = testimonial.company_logo ? 
+                        `<img src="{{ asset('storage/testimoni/') }}/${testimonial.company_logo}" 
+                              alt="${testimonial.company_name || 'Company Logo'}" 
+                              class="ms-auto" 
+                              style="max-height: 40px; max-width: 120px;">` :
+                        `<span class="ms-auto text-muted">${testimonial.company_name || ''}</span>`;
+                    
+                    html += `
+                    <div class="testimoni-item mb-4 p-3 border rounded">
+                        <div class="d-flex align-items-center mb-3">
+                            ${personPicture}
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="fs-5">${testimonial.person_name || 'Anonim'}</strong>
+                                    ${companyLogo}
+                                </div>
+                                ${testimonial.company_name ? `<small class="text-muted d-block">${testimonial.company_name}</small>` : ''}
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            ${starIcons}
+                            <small class="text-muted ms-2">${new Date(testimonial.created_at).toLocaleDateString('id-ID')}</small>
+                        </div>
+                        <p class="mb-0">${testimonial.testimonial || 'Tidak ada komentar tambahan'}</p>
+                    </div>
+                    `;
+                });
+            } else {
+                html = `
+                <div class="text-center py-4">
+                    <i class="bi bi-chat-square-text fs-1 text-muted mb-3"></i>
+                    <h5>Belum ada testimoni untuk produk ini</h5>
+                    <p class="text-muted">Jadilah yang pertama memberikan ulasan</p>
+                </div>`;
+            }
+            
+            modalBody.innerHTML = html;
+        })
+        .catch(error => {
+            modalBody.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> Gagal memuat testimoni. Silakan coba lagi.
+            </div>`;
+            console.error('Error:', error);
+        });
+}
+</script>
 
 @endsection

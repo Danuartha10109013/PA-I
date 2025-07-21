@@ -34,7 +34,8 @@ PT. Trisurya Solusindo Utama || Testimoni
                         <!-- Star Rating with Animation -->
                         <div class="d-flex align-items-center stars">
                             @for ($i = 0; $i < 5; $i++)
-                                <i class="{{ $i < $testimonial->rating ? 'fas' : 'far' }} fa-star star" style="--star-index: {{ $i }};"></i>
+                            <i class="bi bi-star{{ $i < $testimonial->rating ? '-fill' : '' }} fs-4 text-warning" style="--star-index: 0;" aria-hidden="true"></i>
+                                <!-- <i class="{{ $i < $testimonial->rating ? 'fas' : 'far' }} fa-star star" style="--star-index: {{ $i }};"></i> -->
                             @endfor
                         </div>
                     </div>

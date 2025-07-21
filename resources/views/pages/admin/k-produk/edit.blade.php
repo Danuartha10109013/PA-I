@@ -102,6 +102,44 @@
                 <label for="brosur" class="form-label">Brosur</label> <p>Recent Files : {{$data->brosur ?? ''}}</p>
                 <input type="file" name="brosur" id="brosur" class="form-control">
             </div>
+
+            <div class="mb-3">
+                <label for="edit_harga" class="form-label">Harga</label>
+                <input type="text" class="form-control" id="edit_harga_display" style="outline: 2px solid grey;" value="Rp. {{ number_format($data->harga, 0, ',', '.') }}" required>
+                <input type="hidden" name="harga" id="edit_harga" value="{{ $data->harga }}">
+            </div>
+            <script>
+                const editHargaDisplay = document.getElementById('edit_harga_display');
+                const editHargaHidden = document.getElementById('edit_harga');
+                editHargaDisplay.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^0-9]/g, '');
+                    if (value) {
+                        this.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
+                    } else {
+                        this.value = '';
+                    }
+                    editHargaHidden.value = value;
+                });
+            </script>
+
+            <div class="mb-3">
+                <label for="edit_harga_jual" class="form-label">Harga Jual</label>
+                <input type="text" class="form-control" id="edit_harga_jual_display" style="outline: 2px solid grey;" value="Rp. {{ number_format($data->harga_jual, 0, ',', '.') }}" required>
+                <input type="hidden" name="harga_jual" id="edit_harga_jual" value="{{ $data->harga_jual }}">
+            </div>
+            <script>
+                const editHargaJualDisplay = document.getElementById('edit_harga_jual_display');
+                const editHargaJualHidden = document.getElementById('edit_harga_jual');
+                editHargaJualDisplay.addEventListener('input', function(e) {
+                    let value = this.value.replace(/[^0-9]/g, '');
+                    if (value) {
+                        this.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
+                    } else {
+                        this.value = '';
+                    }
+                    editHargaJualHidden.value = value;
+                });
+            </script>
             
             <!-- Include CKEditor -->
             <script src="https://cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>

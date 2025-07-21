@@ -490,12 +490,26 @@ document.addEventListener("DOMContentLoaded", function () {
                                 messages.forEach(msg => {
                                     const div = document.createElement('div');
                                     div.className = `d-flex mb-2 justify-content-${msg.sender === 'User' ? 'start' : 'end'}`;
-                                    const isImage = msg.file && msg.file.match(/\.(jpeg|jpg|png|gif|webp)$/i);
+                                    let parsedMessage = [];
+
+                                    try {
+                                        parsedMessage = JSON.parse(msg.message); // hasilnya: ['images/products/01/gambar PH.png']
+                                    } catch (e) {
+                                        // Kalau bukan JSON valid, anggap sebagai teks biasa
+                                        parsedMessage = null;
+                                    }
+
+                                    const isImageFromMessage = parsedMessage && Array.isArray(parsedMessage) && parsedMessage[0].match(/\.(jpeg|jpg|png|gif|webp)$/i);
+
+                                    const isImageFile = msg.file && msg.file.match(/\.(jpeg|jpg|png|gif|webp)$/i);
+
                                     const fileContent = msg.file
-                                        ? (isImage
+                                        ? (isImageFile
                                             ? `<img src="${msg.file}" class="preview-image" style="width: 40%;" />`
                                             : `<a href="${msg.file}" target="_blank">Download file</a>`)
-                                        : msg.message;
+                                        : (isImageFromMessage
+                                            ? `<div><img src="/storage/${parsedMessage[0]}" class="rounded preview-image" style="width: 150px;"/></div><br>Harga : ${parsedMessage[1]?formatRupiah(parsedMessage[1]):''}`
+                                            : msg.message);
 
                                     div.innerHTML = `
                                         <div class="px-3 py-2 rounded ${msg.sender === 'User' ? 'bg-secondary text-white' : 'bg-success text-white'}">
@@ -613,6 +627,14 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error cek-pesanan:", error);
         });
 });
+
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(angka);
+}
 </script>
 
 
